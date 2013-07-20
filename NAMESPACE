@@ -1,0 +1,4 @@
+export(is.connected)
+export(is.linux)
+export(is.mac)
+export(is.windows)
