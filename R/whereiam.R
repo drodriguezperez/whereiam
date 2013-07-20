@@ -10,8 +10,10 @@
 #'
 #' @author Daniel Rodriguez Perez \email{daniel.rodriguez.perez@@gmail.com}
 #' 
-#' @name whereiam-package
-#' @aliases whereiam-package whereiam
+#' @import RCurl
+#' @import rjson
+#' 
+#' @name whereiam
 #' @docType package
 #' 
 NULL

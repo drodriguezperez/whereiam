@@ -1,4 +1,8 @@
+export(getExternalIP)
+export(getLocationFromFreegeoip)
 export(is.connected)
 export(is.linux)
 export(is.mac)
 export(is.windows)
+import(RCurl)
+import(rjson)
