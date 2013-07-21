@@ -47,19 +47,46 @@ is.connected <- function() {
 getExternalIP <- function() {
   return(getExternalIP.whatismyipaddress())
 }
- 
+
+# Get the external ip from a server indicated in the URL
+getExternalIP.url <- function(url) {
+  if (is.connected()) {
+    ip <- getURL(url)
+    ip <- gsub('\n', '', ip)
+  } else {
+    ip <- NULL
+  }
+  
+  return(ip)
+}
+
 #' @usage getExternalIP.whatismyipaddress()
 #' 
 #' @rdname getExternalIP
 #' @export getExternalIP.whatismyipaddress
 #' @aliases getExternalIP.whatismyipaddress getExternalIP.whatismyipaddress
 getExternalIP.whatismyipaddress <- function() {
-  if (is.connected()) {
-    ip <- getURL('http://bot.whatismyipaddress.com')
-  } else {
-    ip <- NULL
-  }
-  
+  ip <- getExternalIP.url('http://bot.whatismyipaddress.com')
+  return(ip)
+}
+
+#' @usage getExternalIP.ifconfig()
+#' 
+#' @rdname getExternalIP
+#' @export getExternalIP.ifconfig
+#' @aliases getExternalIP.ifconfig getExternalIP.ifconfig
+getExternalIP.ifconfig <- function() {
+  ip <- getExternalIP.url('http://ifconfig.me/ip')
+  return(ip)
+}
+
+#' @usage getExternalIP.icanhazip()
+#' 
+#' @rdname getExternalIP
+#' @export getExternalIP.icanhazip
+#' @aliases getExternalIP.icanhazip getExternalIP.icanhazip
+getExternalIP.icanhazip <- function() {
+  ip <- getExternalIP.url('http://icanhazip.com')
   return(ip)
 }
 
