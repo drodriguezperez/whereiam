@@ -114,18 +114,34 @@ getLocation <- function(ip = getExternalIP()) {
   return(getLocation.freegeoip(ip))
 }
 
+# Returns the location of an IP using the URL
+getLocation.url <- function(url, ip) {
+  if (is.null(ip)) {
+    result <- NULL
+  } else {
+    url    <- paste(url, ip, sep = '')
+    result <- fromJSON(readLines(url, warn=FALSE))
+  }
+  
+  return(result)
+}
+
 #' @usage getLocation.freegeoip(ip = getExternalIP())
 #' 
 #' @rdname getLocation
 #' @export getLocation.freegeoip
 #' @aliases getLocation getLocation.freegeoip
 getLocation.freegeoip <- function(ip = getExternalIP()) {
-  if (is.null(ip)) {
-    result <- NULL
-  } else {
-    url    <- paste('http://freegeoip.net/json/', ip, sep = '')
-    result <- fromJSON(readLines(url, warn=FALSE))
-  }
-  
+  result <- getLocation.url('http://freegeoip.net/json/', ip)
+  return(result)
+}
+
+#' @usage getLocation.hostip(ip = getExternalIP())
+#' 
+#' @rdname getLocation
+#' @export getLocation.hostip
+#' @aliases getLocation.hostip getLocation.hostip
+getLocation.hostip <- function(ip = getExternalIP()) {
+  result <- getLocation.url('http://api.hostip.info/get_json.php?position=true&ip=', ip)
   return(result)
 }

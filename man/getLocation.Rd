@@ -1,11 +1,14 @@
 \name{getLocation}
 \alias{getLocation}
 \alias{getLocation.freegeoip}
+\alias{getLocation.hostip}
 \title{Get location}
 \usage{
   getLocation(ip = getExternalIP())
 
   getLocation.freegeoip(ip = getExternalIP())
+
+  getLocation.hostip(ip = getExternalIP())
 }
 \arguments{
   \item{ip}{an IP address for geolocation (optional default
