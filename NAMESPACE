@@ -1,5 +1,7 @@
 export(getExternalIP)
-export(getLocationFromFreegeoip)
+export(getExternalIP.whatismyipaddress)
+export(getLocation)
+export(getLocation.freegeoip)
 export(is.connected)
 export(is.linux)
 export(is.mac)

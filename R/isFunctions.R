@@ -9,6 +9,8 @@
 #' 
 #' Returns TRUE for computers runing OS X (Macintosh)
 #' 
+#' @usage is.mac()
+#' 
 #' @examples
 #' if (is.mac()) {
 #'   message('The computer is running OS X')
@@ -27,6 +29,8 @@ is.mac <- function() {
 #' 
 #' Returns TRUE for computers runing Windows OS
 #' 
+#' @usage is.windows()
+#' 
 #' @examples
 #' if (is.windows()) {
 #'   message('The computer is running Windows OS')
@@ -44,6 +48,8 @@ is.windows <- function() {
 #' Check is the computer is runing Linux
 #' 
 #' Returns TRUE for computers runing Linux OS
+#' 
+#' @usage is.linux()
 #' 
 #' @examples
 #' if (is.linux()) {
