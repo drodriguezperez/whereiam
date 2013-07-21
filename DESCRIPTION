@@ -12,3 +12,4 @@ Collate:
     'isFunctions.R'
     'network.R'
     'whereiam.R'
+    'geoInformation.R'
