@@ -34,3 +34,7 @@ Finally it is possible to get the address by using the geographic coordinates us
 ```
 info <- getGeocoding(loc$latitude, loc$longitude)
 ```
+
+## License
+
+[GNU General Public License, version 3](http://cran.r-project.org/web/licenses/GPL-3)
