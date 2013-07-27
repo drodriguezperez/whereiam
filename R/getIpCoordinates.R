@@ -19,15 +19,14 @@
 ##  along with this program.  If not, see <http://www.gnu.org/licenses/>
 ## 
 
-#' Get location
+#' Get location coordinates from an IP
 #' 
-#' Returns the location of an IP using. If an IP is indicated the function
-#' returns it's estimated location, otherwise it will use the IP of the
-#' system.
+#' Returns the location coordinates of an IP using an external service. If an
+#' IP is indicated the function returns it's estimated location, otherwise it
+#' will use the IP of the system.
 #' 
 #' @param ip an IP address for geolocation (optional default uses the computer)
-#' 
-#' @usage getIpCoordinates(ip = getExternalIP())
+#' @param service the optional service used to obtain the coordinates
 #' 
 #' @examples
 #' # Get computer location
@@ -39,8 +38,11 @@
 #' @rdname getIpCoordinates
 #' @export getIpCoordinates
 #' @aliases getIpCoordinates
-getIpCoordinates <- function(ip = getExternalIP()) {
-  return(getIpCoordinates.freegeoip(ip))
+getIpCoordinates <- function(ip = getExternalIP(), service = 'freegeoip') {
+  switch(tolower(service),
+         freegeoip = getIpCoordinates.freegeoip(ip),
+         hostip    = getIpCoordinates.hostip(ip),
+         stop(sprintf('The service "%s" is not supported', service)))
 }
 
 # Returns the location of an IP using the URL

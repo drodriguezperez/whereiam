@@ -26,8 +26,7 @@
 #' 
 #' @param latitude the coordinates longitude
 #' @param longitude the coordinates longitude
-#' 
-#' @usage reverseGeocoding (latitude, longitude)
+#' @param service the optional service used to obtain the information
 #' 
 #' @examples
 #' # Get information from diferent coordinates
@@ -36,9 +35,10 @@
 #' @rdname reverseGeocoding
 #' @export reverseGeocoding
 #' @aliases reverseGeocoding
-reverseGeocoding <- function(latitude, longitude) {
-  result <- reverseGeocoding.google(latitude, longitude)
-  return(result)
+reverseGeocoding <- function(latitude, longitude, service = 'google') {
+  switch(tolower(service),
+         google = reverseGeocoding.google(latitude, longitude),
+         stop(sprintf('The service "%s" is not supported', service)))
 }
 
 #' @usage reverseGeocoding.google(latitude, longitude)
