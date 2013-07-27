@@ -8,7 +8,7 @@
 }
 \details{
   \tabular{ll}{ Package: \tab whereiam \cr Version: \tab
-  0.1.0 \cr License: \tab GPL-3 \cr }
+  0.0.1 \cr License: \tab GPL-3 \cr }
 }
 \author{
   Daniel Rodriguez Perez
