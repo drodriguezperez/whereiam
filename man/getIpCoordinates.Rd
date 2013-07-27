@@ -1,14 +1,14 @@
-\name{getLocation}
-\alias{getLocation}
-\alias{getLocation.freegeoip}
-\alias{getLocation.hostip}
+\name{getIpCoordinates}
+\alias{getIpCoordinates}
+\alias{getIpCoordinates.freegeoip}
+\alias{getIpCoordinates.hostip}
 \title{Get location}
 \usage{
-  getLocation(ip = getExternalIP())
+  getIpCoordinates(ip = getExternalIP())
 
-  getLocation.freegeoip(ip = getExternalIP())
+  getIpCoordinates.freegeoip(ip = getExternalIP())
 
-  getLocation.hostip(ip = getExternalIP())
+  getIpCoordinates.hostip(ip = getExternalIP())
 }
 \arguments{
   \item{ip}{an IP address for geolocation (optional default
@@ -21,9 +21,9 @@
 }
 \examples{
 # Get computer location
-location <- getLocation()
+location <- getIpCoordinates()
 
 # Get '10.10.10.10' location
-location <- getLocation('10.10.10.10')
+location <- getIpCoordinates('10.10.10.10')
 }
 

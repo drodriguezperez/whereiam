@@ -12,4 +12,5 @@ Collate:
     'isFunctions.R'
     'network.R'
     'whereiam.R'
-    'geoInformation.R'
+    'getIpCoordinates.R'
+    'reverseGeocoding.R'
