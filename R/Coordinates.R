@@ -283,9 +283,9 @@ haversineDistance.Coordinates <- function(coordinate1, coordinate2,
 #' @param ... other arguments
 #' 
 #' @examples
-#' cord1    <- Coordinates(43, -8)
-#' cord2    <- Coordinates(42, -7)
-#' distance <- bearing(cord1, cord2)
+#' cord1 <- Coordinates(43, -8)
+#' cord2 <- Coordinates(42, -7)
+#' brg   <- bearing(cord1, cord2)
 #' 
 #' @rdname bearing
 #' @export bearing
@@ -320,4 +320,120 @@ bearing.Coordinates <- function(coordinate1, coordinate2, ...) {
           coordinate1$longitude,
           coordinate2$latitude,
           coordinate2$longitude)
+}
+
+#' Midpoint between two points
+#'  
+#' Calculate the half-way point along a great circle path between the two
+#' points
+#' 
+#' @param latitude1 the first latitude coordinate
+#' @param longitude1 the first longitude coordinate
+#' @param latitude2 the second latitude coordinate
+#' @param longitude2 the second longitude coordinate
+#' @param coordinate1 the first coordinate class variable
+#' @param coordinate2 the second coordinate class variable
+#' @param ... other arguments
+#' 
+#' @examples
+#' cord1 <- Coordinates(43, -8)
+#' cord2 <- Coordinates(42, -7)
+#' mcord <- midpoint(cord1, cord2)
+#' 
+#' @rdname midpoint
+#' @export midpoint
+midpoint <- function(...) {
+  UseMethod("midpoint")
+}
+
+#' @rdname midpoint
+#' @method midpoint default
+#' @S3method midpoint default
+midpoint.default <- function(latitude1, longitude1,
+                             latitude2, longitude2, ...) {
+  latitude1  <- deg2rad(latitude1)
+  longitude1 <- deg2rad(longitude1)
+  latitude2  <- deg2rad(latitude2)
+  longitude2 <- deg2rad(longitude2)
+  
+  x <- cos(latitude2) * cos(longitude2 - longitude1)
+  y <- cos(latitude2) * sin(longitude2 - longitude1)
+  
+  latitude  <- atan2(sin(latitude1) + sin(latitude2), sqrt((cos(latitude1) + x)^2 +y^2))
+  longitude <- longitude1 + atan2(y, cos(latitude1) + x)
+  
+  result <- Coordinates(rad2deg(latitude), rad2deg(longitude))
+  
+  return(result)
+}
+
+#' @rdname midpoint
+#' @method midpoint Coordinates
+#' @S3method midpoint Coordinates
+midpoint.Coordinates <- function(coordinate1, coordinate2, ...) {
+  midpoint(coordinate1$latitude,
+           coordinate1$longitude,
+           coordinate2$latitude,
+           coordinate2$longitude)
+}
+
+#' Destination point from start, bearing and distance
+#' 
+#' Obtain a destination point from a given start point, initial bearing,
+#' and distance
+#' 
+#' @param latitude a latitude coordinate
+#' @param longitude a longitude coordinate
+#' @param brg the initial bearing
+#' @param distance the distance to add in km or miles
+#' @param units a string with the distance units (default kilometers)
+#' @param coordinate a coordinate class
+#' @param ... other argument
+#' 
+#' @examples
+#' # Add 10 kilometers to icord
+#' icord <- Coordinates(43, -8)
+#' ecord <- destination(icord, 30, 10)
+#' 
+#' @rdname destination
+#' @export destination
+destination <- function(...) {
+  UseMethod("destination")
+}
+
+#' @rdname destination
+#' @method destination default
+#' @S3method destination default
+destination.default <- function(latitude, longitude, brg,
+                                distance, units = 'km', ...) {
+  if (tolower(units) == 'miles') {
+    distance <- distance / KM_TO_MILES
+  }
+  
+  angularDistance <- 2 * distance / EARTH_DIAMETER_KM
+  latitude        <- deg2rad(latitude)
+  longitude       <- deg2rad(longitude)
+  brg             <- deg2rad(brg)
+  
+  newLatitude  <- asin(sin(latitude) * cos(angularDistance) + 
+                         cos(latitude) * sin(angularDistance) * cos(brg))
+  newLongitude <- longitude + atan2(sin(brg) * sin(angularDistance) * cos(longitude),
+                                    cos(angularDistance) -
+                                      sin(latitude) * sin(newLatitude))
+  
+  result <- Coordinates(rad2deg(newLatitude), rad2deg(newLongitude))
+  
+  return(result)
+}
+
+#' @rdname destination
+#' @method destination Coordinates
+#' @S3method destination Coordinates
+destination.Coordinates <- function(coordinate, brg,
+                                    distance, units = 'km', ...) {
+  destination(coordinate$latitude,
+              coordinate$longitude,
+              brg,
+              distance,
+              units = units)
 }

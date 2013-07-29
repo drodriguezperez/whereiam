@@ -1,15 +1,15 @@
-\name{bearing}
-\alias{bearing}
-\alias{bearing.Coordinates}
-\alias{bearing.default}
-\title{Initial bearing between two points}
+\name{midpoint}
+\alias{midpoint}
+\alias{midpoint.Coordinates}
+\alias{midpoint.default}
+\title{Midpoint between two points}
 \usage{
-  bearing(...)
+  midpoint(...)
 
-  \method{bearing}{default} (latitude1, longitude1,
+  \method{midpoint}{default} (latitude1, longitude1,
     latitude2, longitude2, ...)
 
-  \method{bearing}{Coordinates} (coordinate1, coordinate2,
+  \method{midpoint}{Coordinates} (coordinate1, coordinate2,
     ...)
 }
 \arguments{
@@ -28,14 +28,12 @@
   \item{...}{other arguments}
 }
 \description{
-  Calculate the initial bearing between two points. This
-  bearing which if followed in a straight line along a
-  great-circle arc will take you from the start point to
-  the end point
+  Calculate the half-way point along a great circle path
+  between the two points
 }
 \examples{
 cord1 <- Coordinates(43, -8)
 cord2 <- Coordinates(42, -7)
-brg   <- bearing(cord1, cord2)
+mcord <- midpoint(cord1, cord2)
 }
 

@@ -84,3 +84,27 @@ test_that("Bearing calculation", {
   expect_that(bearing(90, -10, 90, 10),
               equals( 80, tolerance = MAXERROR))
 })
+
+test_that("Bearing calculation", {
+  expect_that(midpoint(90,   0, 90,  0),
+              equals(Coordinates(90, 0), tolerance = MAXERROR))
+  expect_that(midpoint(90,  10, 90,  0),
+              equals(Coordinates(90, 5), tolerance = MAXERROR))
+  expect_that(midpoint(90,   0, 90, 10),
+              equals(Coordinates(90, 5), tolerance = MAXERROR))
+  expect_that(midpoint(90, -10, 90, 10),
+              equals(Coordinates(90, 0), tolerance = MAXERROR))
+  expect_that(midpoint(45,   0, 90,  0),
+              equals(Coordinates(67.5, 0), tolerance = MAXERROR))
+  expect_that(midpoint(45,  45, 90,  0),
+              equals(Coordinates(67.5, 45), tolerance = MAXERROR))
+})
+
+test_that("Destination calculation", {
+  expect_that(destination(0, 0,  0, 100),
+              equals(Coordinates(0.8983153, 0), tolerance = MAXERROR))
+  expect_that(destination(0, 0, 45, 100),
+              equals(Coordinates(0.6351919, 0.6352309), tolerance = MAXERROR))
+  expect_that(destination(0, 0, 90, 100),
+              equals(Coordinates(0, 0.8983153), tolerance = MAXERROR))
+})
