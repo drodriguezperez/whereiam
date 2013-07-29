@@ -15,3 +15,5 @@ Collate:
     'getIpCoordinates.R'
     'reverseGeocoding.R'
     'Coordinates.R'
+    'constants.R'
+    'trigonometry.R'

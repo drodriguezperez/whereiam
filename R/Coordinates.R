@@ -19,62 +19,6 @@
 ##  along with this program.  If not, see <http://www.gnu.org/licenses/>
 ##
 
-# *****************************************************************************
-#  Coordinate constans
-# *****************************************************************************
-EARTH_DIAMETER_KM  <- 12756.2732 
-KM_TO_MILES        <- 0.621371192
-
-#' Convert degrees to radians
-#' 
-#' Convert between degrees and radians
-#' 
-#' @param deg degrees to convert to radians
-#' 
-#' @return the value converted in radians
-#' 
-#' @rdname deg2rad
-#' @export deg2rad
-#' @aliases deg2rad
-deg2rad <- function(deg) {
-  result <- deg * pi / 180
-}
-
-#' Convert degrees, minutas and seconds to degrees
-#' 
-#' Transform the values in degrees, minutes and seconds to degrees in decimal
-#' format
-#' 
-#' @param degrees degrees
-#' @param minutes minutes
-#' @param seconds seconds
-#' 
-#' @return the position using degrees in decimal format
-#' 
-#' @rdname dms2deg
-#' @export dms2deg
-#' @aliases dms2deg
-dms2deg <- function(degrees, minutes, seconds) {
-  result <- degrees + minutes / 60 + seconds / 3600
-}
-
-#' Convert degrees, minutas and seconds to radians
-#' 
-#' Transform the values in degrees, minutes and seconds to radians
-#' 
-#' @param degrees degrees
-#' @param minutes minutes
-#' @param seconds seconds
-#' 
-#' @return the position using degrees in radians
-#' 
-#' @rdname dms2rad
-#' @export dms2rad
-#' @aliases dms2rad
-dms2rad <- function(degrees, minutes, seconds) {
-  result <- deg2rad(dms2deg(degrees, minutes, seconds))
-}
-
 #' Validate a latitude value
 #' 
 #' Return a TRUE value is the input parameter is a valid latitude value, FALSE
@@ -204,8 +148,12 @@ addDistanceLatitude.default <- function(latitude, longitude, distance, units = '
 #' @rdname addDistanceLatitude
 #' @method addDistanceLatitude Coordinates
 #' @S3method addDistanceLatitude Coordinates
-addDistanceLatitude.Coordinates <- function(coordinate, distance, units = 'km', ...) {
-  addDistanceLatitude(coordinate$latitude, coordinate$longitude, distance, units = units)
+addDistanceLatitude.Coordinates <- function(coordinate, distance,
+                                            units = 'km', ...) {
+  addDistanceLatitude(coordinate$latitude,
+                      coordinate$longitude,
+                      distance,
+                      units = units)
 }
 
 #' Add distance in the longitude direction to a coordinate
@@ -236,7 +184,8 @@ addDistanceLongitude <- function(...){
 #' @rdname addDistanceLongitude
 #' @method addDistanceLongitude default
 #' @S3method addDistanceLongitude default
-addDistanceLongitude.default <- function(latitude, longitude, distance, units = 'km', ...) {
+addDistanceLongitude.default <- function(latitude, longitude, distance,
+                                         units = 'km', ...) {
   if (tolower(units) == 'miles') {
     distance <- distance / KM_TO_MILES
   }
@@ -252,8 +201,12 @@ addDistanceLongitude.default <- function(latitude, longitude, distance, units = 
 #' @rdname addDistanceLongitude
 #' @method addDistanceLongitude Coordinates
 #' @S3method addDistanceLongitude Coordinates
-addDistanceLongitude.Coordinates <- function(coordinate, distance, units = 'km', ...) {
-  addDistanceLongitude(coordinate$latitude, coordinate$longitude, distance, units = units)
+addDistanceLongitude.Coordinates <- function(coordinate, distance,
+                                             units = 'km', ...) {
+  addDistanceLongitude(coordinate$latitude,
+                       coordinate$longitude,
+                       distance,
+                       units = units)
 }
 
 #' Calculate distance between two points
@@ -274,18 +227,20 @@ addDistanceLongitude.Coordinates <- function(coordinate, distance, units = 'km',
 #' @examples
 #' cord1    <- Coordinates(43, -8)
 #' cord2    <- Coordinates(42, -7)
-#' distance <- getDistance(cord1, cord2)
+#' distance <- haversineDistance(cord1, cord2)
 #' 
-#' @rdname getDistance
-#' @export getDistance
-getDistance <- function(...) {
-  UseMethod("getDistance")
+#' @rdname haversineDistance
+#' @export haversineDistance
+haversineDistance <- function(...) {
+  UseMethod("haversineDistance")
 }
 
-#' @rdname getDistance
-#' @method getDistance default
-#' @S3method getDistance default
-getDistance.default <- function(latitude1, longitude1, latitude2, longitude2, units = 'km', ...) {
+#' @rdname haversineDistance
+#' @method haversineDistance default
+#' @S3method haversineDistance default
+haversineDistance.default <- function(latitude1, longitude1,
+                                      latitude2, longitude2,
+                                      units = 'km', ...) {
   incLatitude  <- deg2rad(latitude2 - latitude1)
   incLongitude <- deg2rad(longitude2 - longitude1)
   
@@ -301,10 +256,68 @@ getDistance.default <- function(latitude1, longitude1, latitude2, longitude2, un
   return(result)
 }
 
-#' @rdname getDistance
-#' @method getDistance Coordinates
-#' @S3method getDistance Coordinates
-getDistance.Coordinates <- function(coordinate1, coordinate2, units = 'km', ...) {
-  getDistance(coordinate1$latitude, coordinate1$longitude, 
-              coordinate2$latitude, coordinate2$longitude, units = units)
+#' @rdname haversineDistance
+#' @method haversineDistance Coordinates
+#' @S3method haversineDistance Coordinates
+haversineDistance.Coordinates <- function(coordinate1, coordinate2,
+                                          units = 'km', ...) {
+  haversineDistance(coordinate1$latitude,
+                    coordinate1$longitude,
+                    coordinate2$latitude,
+                    coordinate2$longitude,
+                    units = units)
+}
+
+#' Initial bearing between two points
+#'  
+#' Calculate the initial bearing between two points. This bearing which if
+#' followed in a straight line along a great-circle arc will take you from
+#' the start point to the end point
+#' 
+#' @param latitude1 the first latitude coordinate
+#' @param longitude1 the first longitude coordinate
+#' @param latitude2 the second latitude coordinate
+#' @param longitude2 the second longitude coordinate
+#' @param coordinate1 the first coordinate class variable
+#' @param coordinate2 the second coordinate class variable
+#' @param ... other arguments
+#' 
+#' @examples
+#' cord1    <- Coordinates(43, -8)
+#' cord2    <- Coordinates(42, -7)
+#' distance <- bearing(cord1, cord2)
+#' 
+#' @rdname bearing
+#' @export bearing
+bearing <- function(...) {
+  UseMethod("bearing")
+}
+
+#' @rdname bearing
+#' @method bearing default
+#' @S3method bearing default
+bearing.default <- function(latitude1, longitude1,
+                            latitude2, longitude2, ...) {
+  latitude1  <- deg2rad(latitude1)
+  longitude1 <- deg2rad(longitude1)
+  latitude2  <- deg2rad(latitude2)
+  longitude2 <- deg2rad(longitude2)
+  
+  y  <- sin(longitude2 - longitude1) * cos(latitude2)
+  x1 <- cos(latitude1) * sin(latitude2)
+  x2 <- sin(latitude1) * cos(latitude2) * cos(longitude2 - longitude1)
+  
+  result <- rad2deg(atan2(y, x1 - x2))
+  
+  return(result)
+}
+
+#' @rdname bearing
+#' @method bearing Coordinates
+#' @S3method bearing Coordinates
+bearing.Coordinates <- function(coordinate1, coordinate2, ...) {
+  bearing(coordinate1$latitude,
+          coordinate1$longitude,
+          coordinate2$latitude,
+          coordinate2$longitude)
 }

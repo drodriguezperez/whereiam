@@ -23,20 +23,6 @@ context("Coordinates S3 class")
 
 MAXERROR <- 1e-6
 
-test_that("conversions of angles", {
-  expect_that(deg2rad( 0), equals(0, tolerance = MAXERROR))
-  expect_that(deg2rad(10), equals(0.1745329, tolerance = MAXERROR))
-  expect_that(deg2rad(40), equals(0.6981317, tolerance = MAXERROR))
-  
-  expect_that(dms2deg( 0,  0,  0), equals(0, tolerance = MAXERROR))
-  expect_that(dms2deg(10, 30,  0), equals(10.5, tolerance = MAXERROR))
-  expect_that(dms2deg(25, 30, 30), equals(25.50833, tolerance = MAXERROR))
-  
-  expect_that(dms2rad( 0,  0,  0), equals(0, tolerance = MAXERROR))
-  expect_that(dms2rad(10, 30,  0), equals(0.1832596, tolerance = MAXERROR))
-  expect_that(dms2rad(25, 30, 30), equals(0.4452043, tolerance = MAXERROR))
-})
-
 test_that("is.latitude and is.longitude validation", {
   expect_that(is.latitude(   0), is_true())
   expect_that(is.latitude(  30), is_true())
@@ -67,13 +53,13 @@ test_that("Coordinates S3 class errors", {
 })
 
 test_that("Distance calculation", {
-  test_that(getDistance( 0,  0,  0,  0),
+  test_that(haversineDistance( 0,  0,  0,  0),
             equals(0, tolerance = MAXERROR))
-  test_that(getDistance( 0,  0, 90, 90),
+  test_that(haversineDistance( 0,  0, 90, 90),
             equals(10018.75, tolerance = MAXERROR))
-  test_that(getDistance(40, 30, 45, 25),
+  test_that(haversineDistance(40, 30, 45, 25),
             equals(  691.2137, tolerance = MAXERROR))
-  test_that(getDistance(23, 33, 23, 31),
+  test_that(haversineDistance(23, 33, 23, 31),
             equals(  204.9387, tolerance = MAXERROR))
 })
 
@@ -86,4 +72,15 @@ test_that("Add distance to coordinates", {
   
   expect_that(addDistanceLongitude(33, 46, 373.419),
               equals(Coordinates(33, 50), tolerance = 46 * MAXERROR))           
+})
+
+test_that("Bearing calculation", {
+  expect_that(bearing(90,   0, 90,  0),
+              equals(  0, tolerance = MAXERROR))
+  expect_that(bearing(90,  10, 90,  0),
+              equals(-85, tolerance = MAXERROR))
+  expect_that(bearing(90,   0, 90, 10),
+              equals( 85, tolerance = MAXERROR))
+  expect_that(bearing(90, -10, 90, 10),
+              equals( 80, tolerance = MAXERROR))
 })

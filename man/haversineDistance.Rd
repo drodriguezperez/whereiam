@@ -1,15 +1,15 @@
-\name{getDistance}
-\alias{getDistance}
-\alias{getDistance.Coordinates}
-\alias{getDistance.default}
+\name{haversineDistance}
+\alias{haversineDistance}
+\alias{haversineDistance.Coordinates}
+\alias{haversineDistance.default}
 \title{Calculate distance between two points}
 \usage{
-  getDistance(...)
+  haversineDistance(...)
 
-  \method{getDistance}{default} (latitude1, longitude1,
-    latitude2, longitude2, units = "km", ...)
+  \method{haversineDistance}{default} (latitude1,
+    longitude1, latitude2, longitude2, units = "km", ...)
 
-  \method{getDistance}{Coordinates} (coordinate1,
+  \method{haversineDistance}{Coordinates} (coordinate1,
     coordinate2, units = "km", ...)
 }
 \arguments{
@@ -39,6 +39,6 @@
 \examples{
 cord1    <- Coordinates(43, -8)
 cord2    <- Coordinates(42, -7)
-distance <- getDistance(cord1, cord2)
+distance <- haversineDistance(cord1, cord2)
 }
 
