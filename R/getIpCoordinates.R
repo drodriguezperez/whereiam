@@ -64,6 +64,7 @@ getIpCoordinates.url <- function(url, ip) {
 #' @aliases getIpCoordinates.freegeoip
 getIpCoordinates.freegeoip <- function(ip = getExternalIP()) {
   result <- getIpCoordinates.url('http://freegeoip.net/json/', ip)
+  result <- Coordinate(result$latitude, result$longitude)
   return(result)
 }
 
@@ -74,5 +75,6 @@ getIpCoordinates.freegeoip <- function(ip = getExternalIP()) {
 #' @aliases getIpCoordinates.hostip
 getIpCoordinates.hostip <- function(ip = getExternalIP()) {
   result <- getIpCoordinates.url('http://api.hostip.info/get_json.php?position=true&ip=', ip)
+  result <- Coordinate(result$lat, result$lng)
   return(result)
 }
