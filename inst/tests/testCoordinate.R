@@ -1,5 +1,5 @@
 ##
-##  Unit testing for Coordinates S3 class
+##  Unit testing for Coordinate S3 class
 ##
 ##  Created by Daniel Rodríguez Pérez on 28/7/2013.
 ##
@@ -19,7 +19,7 @@
 ##  along with this program.  If not, see <http://www.gnu.org/licenses/>
 ##
 
-context("Coordinates S3 class")
+context("Coordinate S3 class")
 
 MAXERROR <- 1e-6
 
@@ -43,16 +43,16 @@ test_that("is.latitude and is.longitude validation", {
   expect_that(is.longitude('10'), is_false())
 })
 
-test_that("Coordinates S3 class errors", {
-  expect_that(Coordinates(120, 100),
+test_that("Coordinate S3 class errors", {
+  expect_that(Coordinate(120, 100),
               throws_error('The latitude is not a valid value'))
-  expect_that(Coordinates( 90, 300),
+  expect_that(Coordinate( 90, 300),
               throws_error('The longitude is not a valid value'))
-  expect_that(Coordinates(120, 300),
+  expect_that(Coordinate(120, 300),
               throws_error('The latitude and longitude are not valid value'))
 })
 
-test_that("Distance calculation", {
+test_that("Haversine distance calculation", {
   test_that(haversineDistance( 0,  0,  0,  0),
             equals(0, tolerance = MAXERROR))
   test_that(haversineDistance( 0,  0, 90, 90),
@@ -63,15 +63,26 @@ test_that("Distance calculation", {
             equals(  204.9387, tolerance = MAXERROR))
 })
 
+test_that("Spherical law of cosines distance calculation", {
+  test_that(sphericalDistance( 0,  0,  0,  0),
+            equals(0, tolerance = MAXERROR))
+  test_that(sphericalDistance( 0,  0, 90, 90),
+            equals(10018.75, tolerance = MAXERROR))
+  test_that(sphericalDistance(40, 30, 45, 25),
+            equals(  691.2137, tolerance = MAXERROR))
+  test_that(sphericalDistance(23, 33, 23, 31),
+            equals(  204.9387, tolerance = MAXERROR))
+})
+
 test_that("Add distance to coordinates", {
-  cord0 <- Coordinates(33, 86)
-  cord1 <- Coordinates(36, 86)
+  cord0 <- Coordinate(33, 86)
+  cord1 <- Coordinate(36, 86)
   
   expect_that(addDistanceLatitude(cord0, 333.9585),
               equals(cord1, tolerance = 33 * MAXERROR))
   
   expect_that(addDistanceLongitude(33, 46, 373.419),
-              equals(Coordinates(33, 50), tolerance = 46 * MAXERROR))           
+              equals(Coordinate(33, 50), tolerance = 46 * MAXERROR))           
 })
 
 test_that("Bearing calculation", {
@@ -87,24 +98,24 @@ test_that("Bearing calculation", {
 
 test_that("Bearing calculation", {
   expect_that(midpoint(90,   0, 90,  0),
-              equals(Coordinates(90, 0), tolerance = MAXERROR))
+              equals(Coordinate(90, 0), tolerance = MAXERROR))
   expect_that(midpoint(90,  10, 90,  0),
-              equals(Coordinates(90, 5), tolerance = MAXERROR))
+              equals(Coordinate(90, 5), tolerance = MAXERROR))
   expect_that(midpoint(90,   0, 90, 10),
-              equals(Coordinates(90, 5), tolerance = MAXERROR))
+              equals(Coordinate(90, 5), tolerance = MAXERROR))
   expect_that(midpoint(90, -10, 90, 10),
-              equals(Coordinates(90, 0), tolerance = MAXERROR))
+              equals(Coordinate(90, 0), tolerance = MAXERROR))
   expect_that(midpoint(45,   0, 90,  0),
-              equals(Coordinates(67.5, 0), tolerance = MAXERROR))
+              equals(Coordinate(67.5, 0), tolerance = MAXERROR))
   expect_that(midpoint(45,  45, 90,  0),
-              equals(Coordinates(67.5, 45), tolerance = MAXERROR))
+              equals(Coordinate(67.5, 45), tolerance = MAXERROR))
 })
 
 test_that("Destination calculation", {
   expect_that(destination(0, 0,  0, 100),
-              equals(Coordinates(0.8983153, 0), tolerance = MAXERROR))
+              equals(Coordinate(0.8983153, 0), tolerance = MAXERROR))
   expect_that(destination(0, 0, 45, 100),
-              equals(Coordinates(0.6351919, 0.6352309), tolerance = MAXERROR))
+              equals(Coordinate(0.6351919, 0.6352309), tolerance = MAXERROR))
   expect_that(destination(0, 0, 90, 100),
-              equals(Coordinates(0, 0.8983153), tolerance = MAXERROR))
+              equals(Coordinate(0, 0.8983153), tolerance = MAXERROR))
 })

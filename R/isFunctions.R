@@ -19,7 +19,6 @@
 ##  along with this program.  If not, see <http://www.gnu.org/licenses/>
 ##
 
-
 #' Check is the computer is runing OS X
 #' 
 #' Returns TRUE for computers runing OS X (Macintosh)
@@ -78,4 +77,62 @@ is.linux <- function() {
     return(TRUE)
   else
     return(FALSE)
+}
+
+#' Validate a latitude value
+#' 
+#' Return a TRUE value is the input parameter is a valid latitude value, FALSE
+#' otherwise
+#' 
+#' @param latitude a latitude coordinate value
+#' 
+#' @examples
+#' # return a true value
+#' is.latitude(40)
+#' 
+#' # return a false value
+#' is.latitude(100)
+#' 
+#' @rdname is.latitude
+#' @export is.latitude
+#' @aliases is.latitude
+is.latitude <- function(latitude) {
+  if (is.numeric(latitude)) {
+    if(latitude >= -90 && latitude <= 90) {
+      return(TRUE)
+    } else {
+      return(FALSE)
+    }
+  } else {
+    return(FALSE)
+  }
+}
+
+#' Validate a longitude value
+#' 
+#' Return a TRUE value is the input parameter is a valid longitude value,
+#' FALSE otherwise
+#' 
+#' @param longitude a longitude coordinate value
+#' 
+#' @examples
+#' #' # return a true value
+#' is.longitude(40)
+#' 
+#' # return a false value
+#' is.longitude(200)
+#' 
+#' @rdname is.longitude
+#' @export is.longitude
+#' @aliases is.longitude
+is.longitude <- function(longitude) {
+  if (is.numeric(longitude)) {
+    if(longitude >= -180 && longitude <= 180) {
+      return(TRUE)
+    } else {
+      return(FALSE)
+    }
+  } else {
+    return(FALSE)
+  }
 }

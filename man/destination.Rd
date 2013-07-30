@@ -1,6 +1,6 @@
 \name{destination}
 \alias{destination}
-\alias{destination.Coordinates}
+\alias{destination.Coordinate}
 \alias{destination.default}
 \title{Destination point from start, bearing and distance}
 \usage{
@@ -9,7 +9,7 @@
   \method{destination}{default} (latitude, longitude, brg,
     distance, units = "km", ...)
 
-  \method{destination}{Coordinates} (coordinate, brg,
+  \method{destination}{Coordinate} (coordinate, brg,
     distance, units = "km", ...)
 }
 \arguments{
@@ -34,7 +34,7 @@
 }
 \examples{
 # Add 10 kilometers to icord
-icord <- Coordinates(43, -8)
+icord <- Coordinate(43, -8)
 ecord <- destination(icord, 30, 10)
 }
 

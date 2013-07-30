@@ -1,5 +1,5 @@
 ##
-##  Coordinates S3 class
+##  Coordinate S3 class
 ##
 ##  Created by Daniel Rodríguez Pérez on 28/7/2013.
 ##
@@ -19,80 +19,22 @@
 ##  along with this program.  If not, see <http://www.gnu.org/licenses/>
 ##
 
-#' Validate a latitude value
+#' Create a Coordinate object
 #' 
-#' Return a TRUE value is the input parameter is a valid latitude value, FALSE
-#' otherwise
-#' 
-#' @param latitude a latitude coordinate value
-#' 
-#' @examples
-#' # return a true value
-#' is.latitude(40)
-#' 
-#' # return a false value
-#' is.latitude(100)
-#' 
-#' @rdname is.latitude
-#' @export is.latitude
-#' @aliases is.latitude
-is.latitude <- function(latitude) {
-  if (is.numeric(latitude)) {
-    if(latitude >= -90 && latitude <= 90) {
-      return(TRUE)
-      } else {
-        return(FALSE)
-      }
-  } else {
-    return(FALSE)
-  }
-}
-
-#' Validate a longitude value
-#' 
-#' Return a TRUE value is the input parameter is a valid longitude value,
-#' FALSE otherwise
-#' 
-#' @param longitude a longitude coordinate value
-#' 
-#' @examples
-#' #' # return a true value
-#' is.longitude(40)
-#' 
-#' # return a false value
-#' is.longitude(200)
-#' 
-#' @rdname is.longitude
-#' @export is.longitude
-#' @aliases is.longitude
-is.longitude <- function(longitude) {
-  if (is.numeric(longitude)) {
-    if(longitude >= -180 && longitude <= 180) {
-      return(TRUE)
-      } else {
-        return(FALSE)
-      }
-  } else {
-    return(FALSE)
-  }
-}
-
-#' Create a Coordinates object
-#' 
-#' The method create a new Coordinates object type using the indicated
+#' The method create a new Coordinate object type using the indicated
 #' latitude and longitude
 #' 
 #' @param latitude a latitude coordinate
 #' @param longitude a longitude coordinate
 #' 
-#' @rdname Coordinates
-#' @export Coordinates
-#' @aliases Coordinates
-Coordinates <- function(latitude, longitude) {
+#' @rdname Coordinate
+#' @export Coordinate
+#' @aliases Coordinate
+Coordinate <- function(latitude, longitude) {
   if (is.latitude(latitude) && is.longitude(longitude)) {
     obj <- list(latitude  = latitude,
                 longitude = longitude)
-    class(obj) <- 'Coordinates'
+    class(obj) <- 'Coordinate'
     return(obj)
   } else {
     if (!is.latitude(latitude) && !is.longitude(longitude)) {
@@ -117,11 +59,11 @@ Coordinates <- function(latitude, longitude) {
 #' @param coordinate a coordinate class
 #' @param ... other arguments
 #' 
-#' @return a Coordinates object with the new coordinates
+#' @return a Coordinate object with the new coordinates
 #' 
 #' @examples
 #' # Add 10 kilometers to the north to a position
-#' cord <- Coordinates(43, -8)
+#' cord <- Coordinate(43, -8)
 #' cord <- addDistanceLatitude(cord, 10)
 #' 
 #' @rdname addDistanceLatitude
@@ -134,21 +76,17 @@ addDistanceLatitude <- function(...){
 #' @method addDistanceLatitude default
 #' @S3method addDistanceLatitude default
 addDistanceLatitude.default <- function(latitude, longitude, distance, units = 'km', ...) {
-  if (tolower(units) == 'miles') {
-    distance <- distance / KM_TO_MILES
-  }
-  
+  distance <- units2Kilometers(distance, units)  
   latitude <- latitude + (distance * 360 / (EARTH_DIAMETER_KM * pi))
-  
-  result <- Coordinates(latitude, longitude)
+  result   <- Coordinate(latitude, longitude)
   
   return(result)
 }
 
 #' @rdname addDistanceLatitude
-#' @method addDistanceLatitude Coordinates
-#' @S3method addDistanceLatitude Coordinates
-addDistanceLatitude.Coordinates <- function(coordinate, distance,
+#' @method addDistanceLatitude Coordinate
+#' @S3method addDistanceLatitude Coordinate
+addDistanceLatitude.Coordinate <- function(coordinate, distance,
                                             units = 'km', ...) {
   addDistanceLatitude(coordinate$latitude,
                       coordinate$longitude,
@@ -168,11 +106,11 @@ addDistanceLatitude.Coordinates <- function(coordinate, distance,
 #' @param coordinate a coordinate class
 #' @param ... other arguments
 #' 
-#' @return a Coordinates object with the new coordinates
+#' @return a Coordinate object with the new coordinates
 #' 
 #' @examples
 #' # Add 10 kilometers to the east to a position
-#' cord <- Coordinates(43, -8)
+#' cord <- Coordinate(43, -8)
 #' cord <- addDistanceLongitude(cord, 10)
 #' 
 #' @rdname addDistanceLongitude
@@ -186,22 +124,18 @@ addDistanceLongitude <- function(...){
 #' @S3method addDistanceLongitude default
 addDistanceLongitude.default <- function(latitude, longitude, distance,
                                          units = 'km', ...) {
-  if (tolower(units) == 'miles') {
-    distance <- distance / KM_TO_MILES
-  }
-  
+  distance  <- units2Kilometers(distance, units)  
   longitude <- longitude +
     (distance * 360 / (EARTH_DIAMETER_KM * pi * cos(deg2rad(latitude))))
-  
-  result <- Coordinates(latitude, longitude)
+  result <- Coordinate(latitude, longitude)
   
   return(result)
 }
 
 #' @rdname addDistanceLongitude
-#' @method addDistanceLongitude Coordinates
-#' @S3method addDistanceLongitude Coordinates
-addDistanceLongitude.Coordinates <- function(coordinate, distance,
+#' @method addDistanceLongitude Coordinate
+#' @S3method addDistanceLongitude Coordinate
+addDistanceLongitude.Coordinate <- function(coordinate, distance,
                                              units = 'km', ...) {
   addDistanceLongitude(coordinate$latitude,
                        coordinate$longitude,
@@ -225,8 +159,8 @@ addDistanceLongitude.Coordinates <- function(coordinate, distance,
 #' @param ... other arguments
 #' 
 #' @examples
-#' cord1    <- Coordinates(43, -8)
-#' cord2    <- Coordinates(42, -7)
+#' cord1    <- Coordinate(43, -8)
+#' cord2    <- Coordinate(42, -7)
 #' distance <- haversineDistance(cord1, cord2)
 #' 
 #' @rdname haversineDistance
@@ -248,20 +182,73 @@ haversineDistance.default <- function(latitude1, longitude1,
     cos(deg2rad(latitude1)) * cos(deg2rad(latitude2))
   
   result <- EARTH_DIAMETER_KM * atan2(sqrt(a), sqrt(1-a))
-  
-  if (tolower(units) == 'miles') {
-    result <- result * KM_TO_MILES
-  }
+  result <- kilometers2Units(result, units)  
   
   return(result)
 }
 
 #' @rdname haversineDistance
-#' @method haversineDistance Coordinates
-#' @S3method haversineDistance Coordinates
-haversineDistance.Coordinates <- function(coordinate1, coordinate2,
+#' @method haversineDistance Coordinate
+#' @S3method haversineDistance Coordinate
+haversineDistance.Coordinate <- function(coordinate1, coordinate2,
                                           units = 'km', ...) {
   haversineDistance(coordinate1$latitude,
+                    coordinate1$longitude,
+                    coordinate2$latitude,
+                    coordinate2$longitude,
+                    units = units)
+}
+
+#' Calculate distance between two points
+#' 
+#' The function calculates distances between the two points using the
+#' Spherical Law of Cosines formula.
+#' 
+#' @param latitude1 the first latitude coordinate
+#' @param longitude1 the first longitude coordinate
+#' @param latitude2 the second latitude coordinate
+#' @param longitude2 the second longitude coordinate
+#' @param units a string with the distance units (default kilometers)
+#' @param coordinate1 the first coordinate class variable
+#' @param coordinate2 the second coordinate class variable
+#' @param ... other arguments
+#' 
+#' @examples
+#' cord1    <- Coordinate(43, -8)
+#' cord2    <- Coordinate(42, -7)
+#' distance <- sphericalDistance(cord1, cord2)
+#' 
+#' @rdname sphericalDistance
+#' @export sphericalDistance
+sphericalDistance <- function(...) {
+  UseMethod("sphericalDistance")
+}
+
+#' @rdname sphericalDistance
+#' @method sphericalDistance default
+#' @S3method sphericalDistance default
+sphericalDistance.default <- function(latitude1, longitude1,
+                                      latitude2, longitude2,
+                                      units = 'km', ...) {
+  latitude1  <- deg2rad(latitude1)
+  longitude1 <- deg2rad(longitude1)
+  latitude2  <- deg2rad(latitude2)
+  longitude2 <- deg2rad(longitude2)
+  
+  result <- EARTH_DIAMETER_KM * acos(sin(latitude1) * sin(latitude2) +
+                                       cos(latitude1) * cos(latitude2) *
+                                       cos(longitude2 - longitude1))
+  result <- kilometers2Units(result, units)  
+  
+  return(result)
+}
+
+#' @rdname sphericalDistance
+#' @method sphericalDistance Coordinate
+#' @S3method sphericalDistance Coordinate
+sphericalDistance.Coordinate <- function(coordinate1, coordinate2,
+                                         units = 'km', ...) {
+  sphericalDistance(coordinate1$latitude,
                     coordinate1$longitude,
                     coordinate2$latitude,
                     coordinate2$longitude,
@@ -283,8 +270,8 @@ haversineDistance.Coordinates <- function(coordinate1, coordinate2,
 #' @param ... other arguments
 #' 
 #' @examples
-#' cord1 <- Coordinates(43, -8)
-#' cord2 <- Coordinates(42, -7)
+#' cord1 <- Coordinate(43, -8)
+#' cord2 <- Coordinate(42, -7)
 #' brg   <- bearing(cord1, cord2)
 #' 
 #' @rdname bearing
@@ -313,9 +300,9 @@ bearing.default <- function(latitude1, longitude1,
 }
 
 #' @rdname bearing
-#' @method bearing Coordinates
-#' @S3method bearing Coordinates
-bearing.Coordinates <- function(coordinate1, coordinate2, ...) {
+#' @method bearing Coordinate
+#' @S3method bearing Coordinate
+bearing.Coordinate <- function(coordinate1, coordinate2, ...) {
   bearing(coordinate1$latitude,
           coordinate1$longitude,
           coordinate2$latitude,
@@ -336,8 +323,8 @@ bearing.Coordinates <- function(coordinate1, coordinate2, ...) {
 #' @param ... other arguments
 #' 
 #' @examples
-#' cord1 <- Coordinates(43, -8)
-#' cord2 <- Coordinates(42, -7)
+#' cord1 <- Coordinate(43, -8)
+#' cord2 <- Coordinate(42, -7)
 #' mcord <- midpoint(cord1, cord2)
 #' 
 #' @rdname midpoint
@@ -362,15 +349,15 @@ midpoint.default <- function(latitude1, longitude1,
   latitude  <- atan2(sin(latitude1) + sin(latitude2), sqrt((cos(latitude1) + x)^2 +y^2))
   longitude <- longitude1 + atan2(y, cos(latitude1) + x)
   
-  result <- Coordinates(rad2deg(latitude), rad2deg(longitude))
+  result <- Coordinate(rad2deg(latitude), rad2deg(longitude))
   
   return(result)
 }
 
 #' @rdname midpoint
-#' @method midpoint Coordinates
-#' @S3method midpoint Coordinates
-midpoint.Coordinates <- function(coordinate1, coordinate2, ...) {
+#' @method midpoint Coordinate
+#' @S3method midpoint Coordinate
+midpoint.Coordinate <- function(coordinate1, coordinate2, ...) {
   midpoint(coordinate1$latitude,
            coordinate1$longitude,
            coordinate2$latitude,
@@ -392,7 +379,7 @@ midpoint.Coordinates <- function(coordinate1, coordinate2, ...) {
 #' 
 #' @examples
 #' # Add 10 kilometers to icord
-#' icord <- Coordinates(43, -8)
+#' icord <- Coordinate(43, -8)
 #' ecord <- destination(icord, 30, 10)
 #' 
 #' @rdname destination
@@ -406,10 +393,7 @@ destination <- function(...) {
 #' @S3method destination default
 destination.default <- function(latitude, longitude, brg,
                                 distance, units = 'km', ...) {
-  if (tolower(units) == 'miles') {
-    distance <- distance / KM_TO_MILES
-  }
-  
+  distance        <- units2Kilometers(distance, units)    
   angularDistance <- 2 * distance / EARTH_DIAMETER_KM
   latitude        <- deg2rad(latitude)
   longitude       <- deg2rad(longitude)
@@ -421,15 +405,15 @@ destination.default <- function(latitude, longitude, brg,
                                     cos(angularDistance) -
                                       sin(latitude) * sin(newLatitude))
   
-  result <- Coordinates(rad2deg(newLatitude), rad2deg(newLongitude))
+  result <- Coordinate(rad2deg(newLatitude), rad2deg(newLongitude))
   
   return(result)
 }
 
 #' @rdname destination
-#' @method destination Coordinates
-#' @S3method destination Coordinates
-destination.Coordinates <- function(coordinate, brg,
+#' @method destination Coordinate
+#' @S3method destination Coordinate
+destination.Coordinate <- function(coordinate, brg,
                                     distance, units = 'km', ...) {
   destination(coordinate$latitude,
               coordinate$longitude,

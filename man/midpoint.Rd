@@ -1,6 +1,6 @@
 \name{midpoint}
 \alias{midpoint}
-\alias{midpoint.Coordinates}
+\alias{midpoint.Coordinate}
 \alias{midpoint.default}
 \title{Midpoint between two points}
 \usage{
@@ -9,7 +9,7 @@
   \method{midpoint}{default} (latitude1, longitude1,
     latitude2, longitude2, ...)
 
-  \method{midpoint}{Coordinates} (coordinate1, coordinate2,
+  \method{midpoint}{Coordinate} (coordinate1, coordinate2,
     ...)
 }
 \arguments{
@@ -32,8 +32,8 @@
   between the two points
 }
 \examples{
-cord1 <- Coordinates(43, -8)
-cord2 <- Coordinates(42, -7)
+cord1 <- Coordinate(43, -8)
+cord2 <- Coordinate(42, -7)
 mcord <- midpoint(cord1, cord2)
 }
 

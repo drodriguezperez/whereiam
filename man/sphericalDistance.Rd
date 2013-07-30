@@ -1,15 +1,15 @@
-\name{haversineDistance}
-\alias{haversineDistance}
-\alias{haversineDistance.Coordinate}
-\alias{haversineDistance.default}
+\name{sphericalDistance}
+\alias{sphericalDistance}
+\alias{sphericalDistance.Coordinate}
+\alias{sphericalDistance.default}
 \title{Calculate distance between two points}
 \usage{
-  haversineDistance(...)
+  sphericalDistance(...)
 
-  \method{haversineDistance}{default} (latitude1,
+  \method{sphericalDistance}{default} (latitude1,
     longitude1, latitude2, longitude2, units = "km", ...)
 
-  \method{haversineDistance}{Coordinate} (coordinate1,
+  \method{sphericalDistance}{Coordinate} (coordinate1,
     coordinate2, units = "km", ...)
 }
 \arguments{
@@ -31,14 +31,12 @@
   \item{...}{other arguments}
 }
 \description{
-  The function calculates great-circle distances between
-  the two points using the "Haversine" formula. This is the
-  shortest distance over the earth's surface ignoring the
-  geographic shape like hills and vales.
+  The function calculates distances between the two points
+  using the Spherical Law of Cosines formula.
 }
 \examples{
 cord1    <- Coordinate(43, -8)
 cord2    <- Coordinate(42, -7)
-distance <- haversineDistance(cord1, cord2)
+distance <- sphericalDistance(cord1, cord2)
 }
 

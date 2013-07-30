@@ -1,6 +1,6 @@
 \name{bearing}
 \alias{bearing}
-\alias{bearing.Coordinates}
+\alias{bearing.Coordinate}
 \alias{bearing.default}
 \title{Initial bearing between two points}
 \usage{
@@ -9,7 +9,7 @@
   \method{bearing}{default} (latitude1, longitude1,
     latitude2, longitude2, ...)
 
-  \method{bearing}{Coordinates} (coordinate1, coordinate2,
+  \method{bearing}{Coordinate} (coordinate1, coordinate2,
     ...)
 }
 \arguments{
@@ -34,8 +34,8 @@
   the end point
 }
 \examples{
-cord1 <- Coordinates(43, -8)
-cord2 <- Coordinates(42, -7)
+cord1 <- Coordinate(43, -8)
+cord2 <- Coordinate(42, -7)
 brg   <- bearing(cord1, cord2)
 }
 
