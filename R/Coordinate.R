@@ -47,6 +47,44 @@ Coordinate <- function(latitude, longitude) {
   }
 }
 
+#' Calculate antipodes
+#' 
+#' Calculate the antipodes of the idicated point.
+#' 
+#' @param latitude a latitude coordinate
+#' @param longitude a longitude coordinate
+#' @param coordinate a coordinate class
+#' @param ... other arguments
+#' 
+#' @rdname antipode
+#' @export antipode
+antipode <- function(...){
+  UseMethod("antipode")
+}
+
+#' @rdname antipode
+#' @method antipode default
+#' @S3method antipode default
+antipode.default <- function(latitude, longitude, ...) {
+  latitude <- - latitude
+  
+  if (longitude > 0) {
+    longitude <- longitude - 180
+  } else {
+    longitude <- longitude + 180
+  }
+  
+  result <- Coordinate(latitude, longitude)
+  return(result)
+}
+
+#' @rdname antipode
+#' @method antipode Coordinate
+#' @S3method antipode Coordinate
+antipode.Coordinate <- function(coordinate, ...) {
+  antipode(coordinate$latitude, coordinate$longitude)
+}
+                                        
 #' Add distance in the latitude direction to a coordinate
 #' 
 #' Add distance in the latitude direction to the indicate coordinate. The
