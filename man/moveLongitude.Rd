@@ -1,16 +1,16 @@
-\name{addDistanceLongitude}
-\alias{addDistanceLongitude}
-\alias{addDistanceLongitude.Coordinate}
-\alias{addDistanceLongitude.default}
+\name{moveLongitude}
+\alias{moveLongitude}
+\alias{moveLongitude.Coordinate}
+\alias{moveLongitude.default}
 \title{Add distance in the longitude direction to a coordinate}
 \usage{
-  addDistanceLongitude(...)
+  moveLongitude(...)
 
-  \method{addDistanceLongitude}{default} (latitude,
-    longitude, distance, units = "km", ...)
-
-  \method{addDistanceLongitude}{Coordinate} (coordinate,
+  \method{moveLongitude}{default} (latitude, longitude,
     distance, units = "km", ...)
+
+  \method{moveLongitude}{Coordinate} (coordinate, distance,
+    units = "km", ...)
 }
 \arguments{
   \item{latitude}{a latitude coordinate}
@@ -37,6 +37,6 @@
 \examples{
 # Add 10 kilometers to the east to a position
 cord <- Coordinate(43, -8)
-cord <- addDistanceLongitude(cord, 10)
+cord <- moveLongitude(cord, 10)
 }
 

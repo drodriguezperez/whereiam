@@ -102,18 +102,18 @@ antipode.Coordinate <- function(coordinate, ...) {
 #' @examples
 #' # Add 10 kilometers to the north to a position
 #' cord <- Coordinate(43, -8)
-#' cord <- addDistanceLatitude(cord, 10)
+#' cord <- moveLatitude(cord, 10)
 #' 
-#' @rdname addDistanceLatitude
-#' @export addDistanceLatitude
-addDistanceLatitude <- function(...){
-  UseMethod("addDistanceLatitude")
+#' @rdname moveLatitude
+#' @export moveLatitude
+moveLatitude <- function(...){
+  UseMethod("moveLatitude")
 }
 
-#' @rdname addDistanceLatitude
-#' @method addDistanceLatitude default
-#' @S3method addDistanceLatitude default
-addDistanceLatitude.default <- function(latitude, longitude, distance, units = 'km', ...) {
+#' @rdname moveLatitude
+#' @method moveLatitude default
+#' @S3method moveLatitude default
+moveLatitude.default <- function(latitude, longitude, distance, units = 'km', ...) {
   distance <- units2Kilometers(distance, units)  
   latitude <- latitude + (distance * 360 / (EARTH_DIAMETER_KM * pi))
   result   <- Coordinate(latitude, longitude)
@@ -121,12 +121,12 @@ addDistanceLatitude.default <- function(latitude, longitude, distance, units = '
   return(result)
 }
 
-#' @rdname addDistanceLatitude
-#' @method addDistanceLatitude Coordinate
-#' @S3method addDistanceLatitude Coordinate
-addDistanceLatitude.Coordinate <- function(coordinate, distance,
+#' @rdname moveLatitude
+#' @method moveLatitude Coordinate
+#' @S3method moveLatitude Coordinate
+moveLatitude.Coordinate <- function(coordinate, distance,
                                             units = 'km', ...) {
-  addDistanceLatitude(coordinate$latitude,
+  moveLatitude(coordinate$latitude,
                       coordinate$longitude,
                       distance,
                       units = units)
@@ -149,18 +149,18 @@ addDistanceLatitude.Coordinate <- function(coordinate, distance,
 #' @examples
 #' # Add 10 kilometers to the east to a position
 #' cord <- Coordinate(43, -8)
-#' cord <- addDistanceLongitude(cord, 10)
+#' cord <- moveLongitude(cord, 10)
 #' 
-#' @rdname addDistanceLongitude
-#' @export addDistanceLongitude
-addDistanceLongitude <- function(...){
-  UseMethod("addDistanceLongitude")
+#' @rdname moveLongitude
+#' @export moveLongitude
+moveLongitude <- function(...){
+  UseMethod("moveLongitude")
 }
 
-#' @rdname addDistanceLongitude
-#' @method addDistanceLongitude default
-#' @S3method addDistanceLongitude default
-addDistanceLongitude.default <- function(latitude, longitude, distance,
+#' @rdname moveLongitude
+#' @method moveLongitude default
+#' @S3method moveLongitude default
+moveLongitude.default <- function(latitude, longitude, distance,
                                          units = 'km', ...) {
   distance  <- units2Kilometers(distance, units)  
   longitude <- longitude +
@@ -170,12 +170,12 @@ addDistanceLongitude.default <- function(latitude, longitude, distance,
   return(result)
 }
 
-#' @rdname addDistanceLongitude
-#' @method addDistanceLongitude Coordinate
-#' @S3method addDistanceLongitude Coordinate
-addDistanceLongitude.Coordinate <- function(coordinate, distance,
+#' @rdname moveLongitude
+#' @method moveLongitude Coordinate
+#' @S3method moveLongitude Coordinate
+moveLongitude.Coordinate <- function(coordinate, distance,
                                              units = 'km', ...) {
-  addDistanceLongitude(coordinate$latitude,
+  moveLongitude(coordinate$latitude,
                        coordinate$longitude,
                        distance,
                        units = units)
@@ -275,7 +275,7 @@ sphericalDistance.default <- function(latitude1, longitude1,
   
   result <- EARTH_DIAMETER_KM * acos(sin(latitude1) * sin(latitude2) +
                                        cos(latitude1) * cos(latitude2) *
-                                       cos(longitude2 - longitude1))
+                                       cos(longitude2 - longitude1)) / 2
   result <- kilometers2Units(result, units)  
   
   return(result)
@@ -291,6 +291,130 @@ sphericalDistance.Coordinate <- function(coordinate1, coordinate2,
                     coordinate2$latitude,
                     coordinate2$longitude,
                     units = units)
+}
+
+#' Calculate distance between two points
+#' 
+#' The function calculates distances between the two points using the
+#' Vincenty's formulae.
+#' 
+#' @param latitude1 the first latitude coordinate
+#' @param longitude1 the first longitude coordinate
+#' @param latitude2 the second latitude coordinate
+#' @param longitude2 the second longitude coordinate
+#' @param units a string with the distance units (default kilometers)
+#' @param coordinate1 the first coordinate class variable
+#' @param coordinate2 the second coordinate class variable
+#' @param maxIter maximum number of iterations in the calculation
+#' @param convCrite convergence criteria for the calculation
+#' @param ... other arguments
+#' 
+#' @examples
+#' cord1    <- Coordinate(43, -8)
+#' cord2    <- Coordinate(42, -7)
+#' distance <- vincentyDistance(cord1, cord2)
+#' 
+#' @rdname vincentyDistance
+#' @export vincentyDistance
+vincentyDistance <- function(...) {
+  UseMethod("vincentyDistance")
+}
+
+#' @rdname vincentyDistance
+#' @method vincentyDistance default
+#' @S3method vincentyDistance default
+vincentyDistance.default <- function(latitude1, longitude1,
+                                     latitude2, longitude2,
+                                     units     = 'km',
+                                     maxIter   = 100,
+                                     convCrite = 1e-12,...) {
+  latitude1  <- deg2rad(latitude1)
+  longitude1 <- deg2rad(longitude1)
+  latitude2  <- deg2rad(latitude2)
+  longitude2 <- deg2rad(longitude2)
+  
+  L     <- longitude2 - longitude1
+  U1    <- atan((1 - FLATTENING) * tan(latitude1))
+  U2    <- atan((1 - FLATTENING) * tan(latitude2)) 
+  sinU1 <- sin(U1)
+  cosU1 <- cos(U1)
+  sinU2 <- sin(U2)
+  cosU2 <- cos(U2)
+  
+  cosSqAlpha <- NULL
+  sinSigma   <- NULL
+  cosSigma   <- NULL
+  cos2SigmaM <- NULL
+  sigma      <- NULL
+  
+  lambda  <- L
+  lambdaP <- 0
+  iter    <- 0
+  
+  while (abs(lambda - lambdaP) > convCrite & iter < maxIter) {
+    sinLambda <- sin(lambda)
+    cosLambda <- cos(lambda)
+    sinSigma <- sqrt((cosU2 * sinLambda) * (cosU2 * sinLambda) +
+                       (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda) *
+                       (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda))
+    
+    if (sinSigma == 0) {
+      return(0)
+    }
+    
+    cosSigma   <- sinU1 * sinU2 + cosU1 * cosU2 * cosLambda
+    sigma      <- atan2(sinSigma, cosSigma)
+    sinAlpha   <- cosU1 * cosU2 * sinLambda / sinSigma
+    cosSqAlpha <- 1 - sinAlpha * sinAlpha
+    cos2SigmaM <- cosSigma - 2 * sinU1 * sinU2 / cosSqAlpha
+    
+    if (is.na(cos2SigmaM)) {
+      cos2SigmaM <- 0
+    }
+    
+    C       <- FLATTENING / 16 * cosSqAlpha *
+      (4 + FLATTENING * (4 - 3 * cosSqAlpha))
+    lambdaP <- lambda
+    lambda  <- L + (1 - C) * FLATTENING * sinAlpha *
+      (sigma + C*sinSigma*(cos2SigmaM+C*cosSigma*(-1+2*cos2SigmaM*cos2SigmaM)))
+    
+    iter <- iter + 1
+  }
+  
+  if (iter >= maxIter) {
+    return(NA)
+  }
+  
+  uSq        <- cosSqAlpha *
+    (SEMI_MAJOR_AXIS * SEMI_MAJOR_AXIS -  SEMI_MINOR_AXIS * SEMI_MINOR_AXIS) /
+    (SEMI_MINOR_AXIS * SEMI_MINOR_AXIS)
+  A          <- 1 + uSq / 16384 * (4096 + uSq * (-768 + uSq * (320 - 175 * uSq)))
+  B          <- uSq / 1024 * (256 + uSq *(-128 + uSq * (74 - 47 * uSq)))
+  deltaSigma <- B * sinSigma * (cos2SigmaM + B / 4 *
+                                  (cosSigma * (-1 + 2 * cos2SigmaM^2) -
+                                     B / 6 * cos2SigmaM * 
+                                     (- 3 + 4 * sinSigma^2) * (-3 + 4 * cos2SigmaM^2)))
+  
+  result <- SEMI_MINOR_AXIS * A * (sigma - deltaSigma) / 1000
+  result <- kilometers2Units(result, units)  
+  
+  return(result)
+}
+
+#' @rdname vincentyDistance
+#' @method vincentyDistance Coordinate
+#' @S3method vincentyDistance Coordinate
+vincentyDistance.Coordinate <- function(coordinate1, coordinate2,
+                                        units     = 'km',
+                                        maxIter   = 100,
+                                        convCrite = 1e-12,...) {
+  vincentyDistance(coordinate1$latitude,
+                   coordinate1$longitude,
+                   coordinate2$latitude,
+                   coordinate2$longitude,
+                   units     = units,
+                   maxIter   = maxIter,
+                   convCrite = convCrite)
 }
 
 #' Initial bearing between two points
