@@ -23,7 +23,7 @@
   radians)}
 }
 \description{
-  Get the latitude from a Coordinate object in the
-  indicated units (degrees or radians)
+  Get the latitude from a Coordinate or a GreatCircle
+  object in the indicated units (degrees or radians)
 }
 

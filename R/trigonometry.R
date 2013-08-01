@@ -83,3 +83,23 @@ dms2rad <- function(degrees, minutes, seconds) {
 rad2deg <- function(rad) {
   result <- 180 * rad / pi   
 }
+
+#' Convert to a radians or degrees
+#' 
+#' Convert from degrees to radians or degrees
+#' 
+#' @param coordinate degrees to convert
+#' @param units a string with the units (degrees or radians)
+#' 
+#' @rdname deg2any
+#' @export deg2any
+#' @aliases deg2any
+deg2any <- function(coordinate,
+                    units = 'degrees') {
+  result <- switch(tolower(units),
+                   degrees = coordinate,
+                   radians = deg2rad(coordinate),
+                   NULL)
+  return(result)
+}
+

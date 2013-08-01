@@ -52,8 +52,8 @@ Coordinate <- function(latitude, longitude) {
 
 #' Extract latitude from a Coordinate
 #' 
-#' Get the latitude from a Coordinate object in the indicated units (degrees
-#' or radians)
+#' Get the latitude from a Coordinate or a GreatCircle object in the indicated
+#' units (degrees or radians)
 #' 
 #' @param coordinate a coordinate class
 #' @param units a string with the units (degrees or radians)
@@ -70,10 +70,7 @@ getLatitude <- function(coordinate,
 #' @S3method getLatitude default
 getLatitude.default <- function(coordinate,
                                 units = 'degrees') {
-  result <- switch(tolower(units),
-                   degrees = coordinate,
-                   radians = deg2rad(coordinate),
-                   NULL)
+  result <- deg2any(coordinate, units = units)
   return(result)
 }
 
@@ -88,8 +85,8 @@ getLatitude.Coordinate <- function(coordinate,
 
 #' Extract longitude from a Coordinate
 #' 
-#' Get the longitude from a Coordinate object in the indicated units (degrees
-#' or radians)
+#' Get the longitude from a Coordinate or a GreatCircle object in the indicated
+#' units (degrees or radians)
 #' 
 #' @param coordinate a coordinate class
 #' @param units a string with the units (degrees or radians)
@@ -106,10 +103,7 @@ getLongitude <- function(coordinate,
 #' @S3method getLongitude default
 getLongitude.default <- function(coordinate,
                                  units = 'degrees') {
-  result <- switch(tolower(units),
-                   degrees = coordinate,
-                   radians = deg2rad(coordinate),
-                   NULL)
+  result <- deg2any(coordinate, units = units)
   return(result)
 }
 

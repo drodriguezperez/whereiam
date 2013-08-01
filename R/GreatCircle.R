@@ -73,3 +73,110 @@ getLongitude.GreatCircle <- function(coordinate,
   result <- getLongitude(coordinate$coordinate, units = units)
   return(result)
 }
+
+#' Extract bearing from a GreatCircle
+#' 
+#' Get the bearing from a GreatCircle object in the indicated units (degrees
+#' or radians)
+#' 
+#' @param coordinate a GreatCircle class
+#' @param units a string with the units (degrees or radians)
+#' 
+#' @rdname getBearing
+#' @export getBearing
+getBearing <- function(coordinate,
+                       units = 'degrees') {
+  UseMethod("getBearing")
+}
+
+#' @rdname getBearing
+#' @method getBearing default
+#' @S3method getBearing default
+getBearing.default <- function(coordinate,
+                               units = 'degrees') {
+  result <- deg2any(coordinate, units = units)
+  return(result)
+}
+
+#' @rdname getBearing
+#' @method getBearing GreatCircle
+#' @S3method getBearing GreatCircle
+getBearing.GreatCircle <- function(coordinate,
+                                   units = 'degrees') {
+  result <- getLongitude(coordinate$bearing, units = units)
+  return(result)
+}
+
+#' Intersection of two great circle
+#'
+#' Calculate of intersection of two great circle paths
+#' 
+#' @param greatCircle1 a GreatCircle class
+#' @param greatCircle2 a GreatCircle class
+#' @param ... other argument
+#' 
+#' @rdname intersection
+#' @export intersection
+intersection <- function(...){
+  UseMethod("intersection")
+}
+
+#' @rdname intersection
+#' @method intersection GreatCircle
+#' @S3method intersection GreatCircle
+intersection.GreatCircle <- function(greatCircle1, greatCircle2, ...) {
+  latitude1  <- getLatitude(greatCircle1, units='radians')
+  longitude1 <- getLongitude(greatCircle1, units='radians')
+  brg1       <- getBearing(greatCircle1, units='radians')
+  latitude2  <- getLatitude(greatCircle2, units='radians')
+  longitude2 <- getLongitude(greatCircle2, units='radians')
+  brg2       <- getBearing(greatCircle2, units='radians')
+  
+  dLat <- latitude2 - latitude1
+  dLon <- longitude2 - longitude1
+  
+  dist12 <- 2 * asin(sqrt(sin(dLat/2) * sin(dLat/2) +
+                            cos(latitude1) * cos(latitude2) * sin(dLon/2) * sin(dLon/2)))
+  if (dist12 == 0) {
+    return(NULL)
+  }
+  
+  brngA <- acos((sin(latitude2) - sin(latitude1) * cos(dist12)) /
+                  (sin(dist12) * cos(latitude1)))
+  if (is.na(brngA)) {
+    brngA = 0
+  }
+  
+  brngB <- acos((sin(latitude1) - sin(latitude2) * cos(dist12)) / (sin(dist12) * cos(latitude2)))
+  
+  if (sin(longitude2 - longitude1) > 0) {
+    brng12 = brngA
+    brng21 = 2 * pi - brngB
+  } else {
+    brng12 = 2 * pi - brngA
+    brng21 = brngB
+  }
+  
+  alpha1 = (brg1 - brng12 + pi) %% (2 * pi) - pi
+  alpha2 = (brng21 - brg2 + pi) %% (2 * pi) - pi
+  
+  if (sin(alpha1) == 0 && sin(alpha2) == 0) {
+    return(NULL)
+  }
+  
+  if (sin(alpha1) * sin(alpha2) < 0) {
+    return(NULL)
+  }
+  
+  alpha3 <- acos(-cos(alpha1) * cos(alpha2) + sin(alpha1) * sin(alpha2) * cos(dist12))
+  dist13 <- atan2(sin(dist12) * sin(alpha1) * sin(alpha2),
+                  cos(alpha2) + cos(alpha1) * cos(alpha3))
+  lat3   <- asin(sin(latitude1) * cos(dist13) + cos(latitude1) * sin(dist13) * cos(brg1))
+  dlongitude13 <- atan2(sin(brg1) * sin(dist13) * cos(latitude1),
+                        cos(dist13) - sin(latitude1) * sin(lat3))
+  lon3   <- longitude1 + dlongitude13;
+  lon3   <- (lon3 + 3 * pi) %% (2 * pi) - pi;  
+  
+  result <- Coordinate(rad2deg(lat3), rad2deg(lon3))
+  return(result)
+}
