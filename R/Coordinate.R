@@ -47,6 +47,72 @@ Coordinate <- function(latitude, longitude) {
   }
 }
 
+#' Extract latitude from a Coordinate
+#' 
+#' Get the latitude from a Coordinate object in the indicated units (degrees
+#' or radians)
+#' 
+#' @param coordinate a coordinate class
+#' @param units a string with the units (degrees or radians)
+#' 
+#' @rdname getLatitude
+#' @export getLatitude
+getLatitude <- function(coordinate, units = 'degrees') {
+  UseMethod("getLatitude")
+}
+
+#' @rdname getLatitude
+#' @method getLatitude default
+#' @S3method getLatitude default
+getLatitude.default <- function(coordinate, units = 'degrees') {
+  result <- switch(tolower(units),
+                   degrees = coordinate,
+                   radians = deg2rad(coordinate),
+                   NULL)
+  return(result)
+}
+
+#' @rdname getLatitude
+#' @method getLatitude Coordinate
+#' @S3method getLatitude Coordinate
+getLatitude.Coordinate <- function(coordinate, units = 'degrees') {
+  result <- getLatitude(coordinate$latitude, units = units)
+  return(result)
+}
+
+#' Extract longitude from a Coordinate
+#' 
+#' Get the longitude from a Coordinate object in the indicated units (degrees
+#' or radians)
+#' 
+#' @param coordinate a coordinate class
+#' @param units a string with the units (degrees or radians)
+#' 
+#' @rdname getLongitude
+#' @export getLongitude
+getLongitude <- function(coordinate, units = 'degrees') {
+  UseMethod("getLongitude")
+}
+
+#' @rdname getLongitude
+#' @method getLongitude default
+#' @S3method getLongitude default
+getLongitude.default <- function(coordinate, units = 'degrees') {
+  result <- switch(tolower(units),
+                   degrees = coordinate,
+                   radians = deg2rad(coordinate),
+                   NULL)
+  return(result)
+}
+
+#' @rdname getLongitude
+#' @method getLongitude Coordinate
+#' @S3method getLongitude Coordinate
+getLongitude.Coordinate <- function(coordinate, units = 'degrees') {
+  result <- getLongitude(coordinate$longitude, units = units)
+  return(result)
+}
+
 #' Calculate antipodes
 #' 
 #' Calculate the antipodes of the idicated point.

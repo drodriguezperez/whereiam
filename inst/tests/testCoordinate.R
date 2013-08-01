@@ -52,6 +52,16 @@ test_that("Coordinate S3 class errors", {
               throws_error('The latitude and longitude are not valid value'))
 })
 
+test_that("Coordinate S3 class getters", {
+  cord <- Coordinate(33, 44)
+  
+  expect_that(getLatitude(cord), equals(33))
+  expect_that(getLatitude(cord, units = 'radians'), equals(deg2rad(33)))
+  
+  expect_that(getLongitude(cord), equals(44))
+  expect_that(getLongitude(cord, units = 'radians'), equals(deg2rad(44)))
+})
+
 test_that("Haversine distance calculation", {
   test_that(haversineDistance( 0,  0,  0,  0),
             equals(0, tolerance = MAXERROR))
