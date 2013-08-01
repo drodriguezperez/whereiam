@@ -31,10 +31,14 @@
 validate.Longitude <- function(longitude) {
   longitude <- reduce360(longitude)
   
-  if (longitude > 180) {
-    longitude <- longitude - 180
-  } else if (longitude < -180) {
-    longitude <- 180 + longitude
+  if (is.null(longitude)) {
+    longitude <- NULL
+  } else {
+    if (longitude > 180) {
+      longitude <- longitude - 180
+    } else if (longitude < -180) {
+      longitude <- 180 + longitude
+    }
   }
   
   return(longitude)
@@ -52,14 +56,18 @@ validate.Longitude <- function(longitude) {
 validate.Latitude <- function(latitude) {
   latitude <- reduce360(latitude)
   
-  if (latitude > 180 || latitude < - 180) {
-    latitude <- - (latitude - 180)
-  }
-  
-  if (latitude > 90) {
-    latitude <- 180 - latitude
-  } else if (latitude < -90) {
-    latitude <- - (180 + latitude)
+  if (is.null(latitude)) {
+    latitude <- NULL
+  } else {
+    if (latitude > 180 || latitude < - 180) {
+      latitude <- - (latitude - 180)
+    }
+    
+    if (latitude > 90) {
+      latitude <- 180 - latitude
+    } else if (latitude < -90) {
+      latitude <- - (180 + latitude)
+    }    
   }
   
   return(latitude)
@@ -67,11 +75,15 @@ validate.Latitude <- function(latitude) {
 
 # Reduce an angle to 360
 reduce360 <- function(deg) {
-  if (deg > 360) {
-    deg <- deg - 360 * floor(deg / 360)
-  } else if (deg < -360) {
-    deg <- deg - 360 * ceiling(deg / 360)
+  if (is.numeric(deg)) {
+    if (deg > 360) {
+      deg <- deg - 360 * floor(deg / 360)
+    } else if (deg < -360) {
+      deg <- deg - 360 * ceiling(deg / 360)
+    }
+  } else {
+    deg <- NULL
   }
-  
+
   return(deg)
 }

@@ -44,11 +44,11 @@ test_that("is.latitude and is.longitude validation", {
 })
 
 test_that("Coordinate S3 class errors", {
-  expect_that(Coordinate(120, 100),
+  expect_that(Coordinate('120', 100),
               throws_error('The latitude is not a valid value'))
-  expect_that(Coordinate( 90, 300),
+  expect_that(Coordinate( 90, '300'),
               throws_error('The longitude is not a valid value'))
-  expect_that(Coordinate(120, 300),
+  expect_that(Coordinate('120', '300'),
               throws_error('The latitude and longitude are not valid value'))
 })
 

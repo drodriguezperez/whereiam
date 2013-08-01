@@ -31,6 +31,9 @@
 #' @export Coordinate
 #' @aliases Coordinate
 Coordinate <- function(latitude, longitude) {
+  latitude  <- validate.Latitude(latitude)
+  longitude <- validate.Longitude(longitude)
+  
   if (is.latitude(latitude) && is.longitude(longitude)) {
     obj <- list(latitude  = latitude,
                 longitude = longitude)
@@ -57,14 +60,16 @@ Coordinate <- function(latitude, longitude) {
 #' 
 #' @rdname getLatitude
 #' @export getLatitude
-getLatitude <- function(coordinate, units = 'degrees') {
+getLatitude <- function(coordinate,
+                        units = 'degrees') {
   UseMethod("getLatitude")
 }
 
 #' @rdname getLatitude
 #' @method getLatitude default
 #' @S3method getLatitude default
-getLatitude.default <- function(coordinate, units = 'degrees') {
+getLatitude.default <- function(coordinate,
+                                units = 'degrees') {
   result <- switch(tolower(units),
                    degrees = coordinate,
                    radians = deg2rad(coordinate),
@@ -75,7 +80,8 @@ getLatitude.default <- function(coordinate, units = 'degrees') {
 #' @rdname getLatitude
 #' @method getLatitude Coordinate
 #' @S3method getLatitude Coordinate
-getLatitude.Coordinate <- function(coordinate, units = 'degrees') {
+getLatitude.Coordinate <- function(coordinate,
+                                   units = 'degrees') {
   result <- getLatitude(coordinate$latitude, units = units)
   return(result)
 }
@@ -90,14 +96,16 @@ getLatitude.Coordinate <- function(coordinate, units = 'degrees') {
 #' 
 #' @rdname getLongitude
 #' @export getLongitude
-getLongitude <- function(coordinate, units = 'degrees') {
+getLongitude <- function(coordinate,
+                         units = 'degrees') {
   UseMethod("getLongitude")
 }
 
 #' @rdname getLongitude
 #' @method getLongitude default
 #' @S3method getLongitude default
-getLongitude.default <- function(coordinate, units = 'degrees') {
+getLongitude.default <- function(coordinate,
+                                 units = 'degrees') {
   result <- switch(tolower(units),
                    degrees = coordinate,
                    radians = deg2rad(coordinate),
@@ -108,7 +116,8 @@ getLongitude.default <- function(coordinate, units = 'degrees') {
 #' @rdname getLongitude
 #' @method getLongitude Coordinate
 #' @S3method getLongitude Coordinate
-getLongitude.Coordinate <- function(coordinate, units = 'degrees') {
+getLongitude.Coordinate <- function(coordinate,
+                                    units = 'degrees') {
   result <- getLongitude(coordinate$longitude, units = units)
   return(result)
 }
@@ -132,7 +141,16 @@ antipode <- function(...){
 #' @method antipode default
 #' @S3method antipode default
 antipode.default <- function(latitude, longitude, ...) {
-  latitude <- - latitude
+  result <- antipode(Coordinate(latitude, longitude))
+  return(result)
+}
+
+#' @rdname antipode
+#' @method antipode Coordinate
+#' @S3method antipode Coordinate
+antipode.Coordinate <- function(coordinate, ...) {  
+  latitude  <- - coordinate$latitude
+  longitude <- coordinate$longitude
   
   if (longitude > 0) {
     longitude <- longitude - 180
@@ -142,13 +160,6 @@ antipode.default <- function(latitude, longitude, ...) {
   
   result <- Coordinate(latitude, longitude)
   return(result)
-}
-
-#' @rdname antipode
-#' @method antipode Coordinate
-#' @S3method antipode Coordinate
-antipode.Coordinate <- function(coordinate, ...) {
-  antipode(coordinate$latitude, coordinate$longitude)
 }
                                         
 #' Add distance in the latitude direction to a coordinate
@@ -179,11 +190,11 @@ moveLatitude <- function(...){
 #' @rdname moveLatitude
 #' @method moveLatitude default
 #' @S3method moveLatitude default
-moveLatitude.default <- function(latitude, longitude, distance, units = 'km', ...) {
-  distance <- units2Kilometers(distance, units)  
-  latitude <- latitude + (distance * 360 / (EARTH_DIAMETER_KM * pi))
-  result   <- Coordinate(latitude, longitude)
-  
+moveLatitude.default <- function(latitude, longitude, distance,
+                                 units = 'km', ...) {
+  result <-   moveLatitude(Coordinate(latitude, longitude),
+                           distance,
+                           units = units)
   return(result)
 }
 
@@ -191,11 +202,15 @@ moveLatitude.default <- function(latitude, longitude, distance, units = 'km', ..
 #' @method moveLatitude Coordinate
 #' @S3method moveLatitude Coordinate
 moveLatitude.Coordinate <- function(coordinate, distance,
-                                            units = 'km', ...) {
-  moveLatitude(coordinate$latitude,
-                      coordinate$longitude,
-                      distance,
-                      units = units)
+                                    units = 'km', ...) {
+  latitude  <- coordinate$latitude
+  longitude <- coordinate$longitude
+  
+  distance <- units2Kilometers(distance, units)  
+  latitude <- latitude + (distance * 360 / (EARTH_DIAMETER_KM * pi))
+  result   <- Coordinate(latitude, longitude)
+  
+  return(result)
 }
 
 #' Add distance in the longitude direction to a coordinate
@@ -228,11 +243,9 @@ moveLongitude <- function(...){
 #' @S3method moveLongitude default
 moveLongitude.default <- function(latitude, longitude, distance,
                                          units = 'km', ...) {
-  distance  <- units2Kilometers(distance, units)  
-  longitude <- longitude +
-    (distance * 360 / (EARTH_DIAMETER_KM * pi * cos(deg2rad(latitude))))
-  result <- Coordinate(latitude, longitude)
-  
+  result <- moveLongitude(Coordinate(latitude, longitude),
+                          distance,
+                          units = units)
   return(result)
 }
 
@@ -241,10 +254,15 @@ moveLongitude.default <- function(latitude, longitude, distance,
 #' @S3method moveLongitude Coordinate
 moveLongitude.Coordinate <- function(coordinate, distance,
                                              units = 'km', ...) {
-  moveLongitude(coordinate$latitude,
-                       coordinate$longitude,
-                       distance,
-                       units = units)
+  latitude  <- coordinate$latitude
+  longitude <- coordinate$longitude
+  
+  distance  <- units2Kilometers(distance, units)  
+  longitude <- longitude +
+    (distance * 360 / (EARTH_DIAMETER_KM * pi * cos(deg2rad(latitude))))
+  result <- Coordinate(latitude, longitude)
+  
+  return(result)
 }
 
 #' Calculate distance between two points
@@ -276,18 +294,11 @@ haversineDistance <- function(...) {
 #' @rdname haversineDistance
 #' @method haversineDistance default
 #' @S3method haversineDistance default
-haversineDistance.default <- function(latitude1, longitude1,
-                                      latitude2, longitude2,
+haversineDistance.default <- function(latitude1, longitude1, latitude2, longitude2,
                                       units = 'km', ...) {
-  incLatitude  <- deg2rad(latitude2 - latitude1)
-  incLongitude <- deg2rad(longitude2 - longitude1)
-  
-  a <- sin(incLatitude/2)^2 + sin(incLongitude/2)^2 *
-    cos(deg2rad(latitude1)) * cos(deg2rad(latitude2))
-  
-  result <- EARTH_DIAMETER_KM * atan2(sqrt(a), sqrt(1-a))
-  result <- kilometers2Units(result, units)  
-  
+  result <- haversineDistance(Coordinate(latitude1, longitude1),
+                              Coordinate(latitude2, longitude2),
+                              units = units)
   return(result)
 }
 
@@ -296,11 +307,21 @@ haversineDistance.default <- function(latitude1, longitude1,
 #' @S3method haversineDistance Coordinate
 haversineDistance.Coordinate <- function(coordinate1, coordinate2,
                                           units = 'km', ...) {
-  haversineDistance(coordinate1$latitude,
-                    coordinate1$longitude,
-                    coordinate2$latitude,
-                    coordinate2$longitude,
-                    units = units)
+  latitude1  <- getLatitude(coordinate1,  units = 'radians')
+  longitude1 <- getLongitude(coordinate1, units = 'radians')
+  latitude2  <- getLatitude(coordinate2,  units = 'radians')
+  longitude2 <- getLongitude(coordinate2, units = 'radians')
+  
+  incLatitude  <- latitude2 - latitude1
+  incLongitude <- longitude2 - longitude1
+  
+  a <- sin(incLatitude/2)^2 + sin(incLongitude/2)^2 *
+    cos(latitude1) * cos(latitude2)
+  
+  result <- EARTH_DIAMETER_KM * atan2(sqrt(a), sqrt(1-a))
+  result <- kilometers2Units(result, units)  
+  
+  return(result)
 }
 
 #' Calculate distance between two points
@@ -331,19 +352,11 @@ sphericalDistance <- function(...) {
 #' @rdname sphericalDistance
 #' @method sphericalDistance default
 #' @S3method sphericalDistance default
-sphericalDistance.default <- function(latitude1, longitude1,
-                                      latitude2, longitude2,
+sphericalDistance.default <- function(latitude1, longitude1, latitude2, longitude2,
                                       units = 'km', ...) {
-  latitude1  <- deg2rad(latitude1)
-  longitude1 <- deg2rad(longitude1)
-  latitude2  <- deg2rad(latitude2)
-  longitude2 <- deg2rad(longitude2)
-  
-  result <- EARTH_DIAMETER_KM * acos(sin(latitude1) * sin(latitude2) +
-                                       cos(latitude1) * cos(latitude2) *
-                                       cos(longitude2 - longitude1)) / 2
-  result <- kilometers2Units(result, units)  
-  
+  result <- sphericalDistance(Coordinate(latitude1, longitude1),
+                              Coordinate(latitude2, longitude2),
+                              units = units)
   return(result)
 }
 
@@ -352,11 +365,17 @@ sphericalDistance.default <- function(latitude1, longitude1,
 #' @S3method sphericalDistance Coordinate
 sphericalDistance.Coordinate <- function(coordinate1, coordinate2,
                                          units = 'km', ...) {
-  sphericalDistance(coordinate1$latitude,
-                    coordinate1$longitude,
-                    coordinate2$latitude,
-                    coordinate2$longitude,
-                    units = units)
+  latitude1  <- getLatitude(coordinate1,  units = 'radians')
+  longitude1 <- getLongitude(coordinate1, units = 'radians')
+  latitude2  <- getLatitude(coordinate2,  units = 'radians')
+  longitude2 <- getLongitude(coordinate2, units = 'radians')
+  
+  result <- EARTH_DIAMETER_KM * acos(sin(latitude1) * sin(latitude2) +
+                                       cos(latitude1) * cos(latitude2) *
+                                       cos(longitude2 - longitude1)) / 2
+  result <- kilometers2Units(result, units)  
+  
+  return(result)
 }
 
 #' Calculate distance between two points
@@ -389,15 +408,29 @@ vincentyDistance <- function(...) {
 #' @rdname vincentyDistance
 #' @method vincentyDistance default
 #' @S3method vincentyDistance default
-vincentyDistance.default <- function(latitude1, longitude1,
-                                     latitude2, longitude2,
+vincentyDistance.default <- function(latitude1, longitude1, latitude2, longitude2,
                                      units     = 'km',
                                      maxIter   = 100,
                                      convCrite = 1e-12,...) {
-  latitude1  <- deg2rad(latitude1)
-  longitude1 <- deg2rad(longitude1)
-  latitude2  <- deg2rad(latitude2)
-  longitude2 <- deg2rad(longitude2)
+  result <- vincentyDistance(Coordinate(latitude1, longitude2),
+                             Coordinate(latitude1, longitude2),
+                             units     = units,
+                             maxIter   = maxIter,
+                             convCrite = convCrite)
+  return(result)
+}
+
+#' @rdname vincentyDistance
+#' @method vincentyDistance Coordinate
+#' @S3method vincentyDistance Coordinate
+vincentyDistance.Coordinate <- function(coordinate1, coordinate2,
+                                        units     = 'km',
+                                        maxIter   = 100,
+                                        convCrite = 1e-12,...) {
+  latitude1  <- getLatitude(coordinate1,  units = 'radians')
+  longitude1 <- getLongitude(coordinate1, units = 'radians')
+  latitude2  <- getLatitude(coordinate2,  units = 'radians')
+  longitude2 <- getLongitude(coordinate2, units = 'radians')
   
   L     <- longitude2 - longitude1
   U1    <- atan((1 - FLATTENING) * tan(latitude1))
@@ -467,22 +500,6 @@ vincentyDistance.default <- function(latitude1, longitude1,
   return(result)
 }
 
-#' @rdname vincentyDistance
-#' @method vincentyDistance Coordinate
-#' @S3method vincentyDistance Coordinate
-vincentyDistance.Coordinate <- function(coordinate1, coordinate2,
-                                        units     = 'km',
-                                        maxIter   = 100,
-                                        convCrite = 1e-12,...) {
-  vincentyDistance(coordinate1$latitude,
-                   coordinate1$longitude,
-                   coordinate2$latitude,
-                   coordinate2$longitude,
-                   units     = units,
-                   maxIter   = maxIter,
-                   convCrite = convCrite)
-}
-
 #' Initial bearing between two points
 #'  
 #' Calculate the initial bearing between two points. This bearing which if
@@ -511,12 +528,20 @@ bearing <- function(...) {
 #' @rdname bearing
 #' @method bearing default
 #' @S3method bearing default
-bearing.default <- function(latitude1, longitude1,
-                            latitude2, longitude2, ...) {
-  latitude1  <- deg2rad(latitude1)
-  longitude1 <- deg2rad(longitude1)
-  latitude2  <- deg2rad(latitude2)
-  longitude2 <- deg2rad(longitude2)
+bearing.default <- function(latitude1, longitude1, latitude2, longitude2, ...) {
+  result <- bearing(Coordinate(latitude1, longitude1),
+                    Coordinate(latitude2, longitude2))
+  return(result)
+}
+
+#' @rdname bearing
+#' @method bearing Coordinate
+#' @S3method bearing Coordinate
+bearing.Coordinate <- function(coordinate1, coordinate2, ...) {
+  latitude1  <- getLatitude(coordinate1,  units = 'radians')
+  longitude1 <- getLongitude(coordinate1, units = 'radians')
+  latitude2  <- getLatitude(coordinate2,  units = 'radians')
+  longitude2 <- getLongitude(coordinate2, units = 'radians')
   
   y  <- sin(longitude2 - longitude1) * cos(latitude2)
   x1 <- cos(latitude1) * sin(latitude2)
@@ -525,16 +550,6 @@ bearing.default <- function(latitude1, longitude1,
   result <- rad2deg(atan2(y, x1 - x2))
   
   return(result)
-}
-
-#' @rdname bearing
-#' @method bearing Coordinate
-#' @S3method bearing Coordinate
-bearing.Coordinate <- function(coordinate1, coordinate2, ...) {
-  bearing(coordinate1$latitude,
-          coordinate1$longitude,
-          coordinate2$latitude,
-          coordinate2$longitude)
 }
 
 #' Midpoint between two points
@@ -564,12 +579,20 @@ midpoint <- function(...) {
 #' @rdname midpoint
 #' @method midpoint default
 #' @S3method midpoint default
-midpoint.default <- function(latitude1, longitude1,
-                             latitude2, longitude2, ...) {
-  latitude1  <- deg2rad(latitude1)
-  longitude1 <- deg2rad(longitude1)
-  latitude2  <- deg2rad(latitude2)
-  longitude2 <- deg2rad(longitude2)
+midpoint.default <- function(latitude1, longitude1, latitude2, longitude2, ...) {
+  result <- midpoint(Coordinate(latitude1, longitude1),
+                     Coordinate(latitude2, longitude2))
+  return(result)
+}
+
+#' @rdname midpoint
+#' @method midpoint Coordinate
+#' @S3method midpoint Coordinate
+midpoint.Coordinate <- function(coordinate1, coordinate2, ...) {
+  latitude1  <- getLatitude(coordinate1,  units = 'radians')
+  longitude1 <- getLongitude(coordinate1, units = 'radians')
+  latitude2  <- getLatitude(coordinate2,  units = 'radians')
+  longitude2 <- getLongitude(coordinate2, units = 'radians')
   
   x <- cos(latitude2) * cos(longitude2 - longitude1)
   y <- cos(latitude2) * sin(longitude2 - longitude1)
@@ -580,16 +603,6 @@ midpoint.default <- function(latitude1, longitude1,
   result <- Coordinate(rad2deg(latitude), rad2deg(longitude))
   
   return(result)
-}
-
-#' @rdname midpoint
-#' @method midpoint Coordinate
-#' @S3method midpoint Coordinate
-midpoint.Coordinate <- function(coordinate1, coordinate2, ...) {
-  midpoint(coordinate1$latitude,
-           coordinate1$longitude,
-           coordinate2$latitude,
-           coordinate2$longitude)
 }
 
 #' Destination point from start, bearing and distance
@@ -619,12 +632,23 @@ destination <- function(...) {
 #' @rdname destination
 #' @method destination default
 #' @S3method destination default
-destination.default <- function(latitude, longitude, brg,
-                                distance, units = 'km', ...) {
+destination.default <- function(latitude, longitude, brg, distance,
+                                units = 'km', ...) {
+  result <- destination(Coordinate(latitude, longitude), brg, distance,
+                        units = units)
+  return(result)
+}
+
+#' @rdname destination
+#' @method destination Coordinate
+#' @S3method destination Coordinate
+destination.Coordinate <- function(coordinate, brg,
+                                    distance, units = 'km', ...) {
+  latitude  <- getLatitude(coordinate,  units = 'radians')
+  longitude <- getLongitude(coordinate, units = 'radians')
+  
   distance        <- units2Kilometers(distance, units)    
   angularDistance <- 2 * distance / EARTH_DIAMETER_KM
-  latitude        <- deg2rad(latitude)
-  longitude       <- deg2rad(longitude)
   brg             <- deg2rad(brg)
   
   newLatitude  <- asin(sin(latitude) * cos(angularDistance) + 
@@ -636,16 +660,4 @@ destination.default <- function(latitude, longitude, brg,
   result <- Coordinate(rad2deg(newLatitude), rad2deg(newLongitude))
   
   return(result)
-}
-
-#' @rdname destination
-#' @method destination Coordinate
-#' @S3method destination Coordinate
-destination.Coordinate <- function(coordinate, brg,
-                                    distance, units = 'km', ...) {
-  destination(coordinate$latitude,
-              coordinate$longitude,
-              brg,
-              distance,
-              units = units)
 }
