@@ -1,6 +1,7 @@
 \name{getLongitude}
 \alias{getLongitude}
 \alias{getLongitude.Coordinate}
+\alias{getLongitude.GreatCircle}
 \alias{getLongitude.default}
 \title{Extract longitude from a Coordinate}
 \usage{
@@ -10,6 +11,9 @@
     units = "degrees")
 
   \method{getLongitude}{Coordinate} (coordinate,
+    units = "degrees")
+
+  \method{getLongitude}{GreatCircle} (coordinate,
     units = "degrees")
 }
 \arguments{

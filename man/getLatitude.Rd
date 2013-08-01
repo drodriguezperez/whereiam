@@ -1,6 +1,7 @@
 \name{getLatitude}
 \alias{getLatitude}
 \alias{getLatitude.Coordinate}
+\alias{getLatitude.GreatCircle}
 \alias{getLatitude.default}
 \title{Extract latitude from a Coordinate}
 \usage{
@@ -10,6 +11,9 @@
     units = "degrees")
 
   \method{getLatitude}{Coordinate} (coordinate,
+    units = "degrees")
+
+  \method{getLatitude}{GreatCircle} (coordinate,
     units = "degrees")
 }
 \arguments{

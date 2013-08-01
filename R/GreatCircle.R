@@ -19,19 +19,57 @@
 ##  along with this program.  If not, see <http://www.gnu.org/licenses/>
 ## 
 
+#' Create a GreatCircle object
+#' 
+#' The method create a new GreatCircle object type using the indicated
+#' latitude and longitude and bearing
+#' 
+#' @param latitude a latitude coordinate
+#' @param longitude a longitude coordinate
+#' @param brg the initial bearing
+#' @param coordinate a coordinate class
+#' @param ... other argument
+#' 
+#' @rdname GreatCircle
+#' @export GreatCircle
+#' @aliases GreatCircle
 GreatCircle <- function(...){
   UseMethod("GreatCircle")
 }
 
+#' @rdname GreatCircle
+#' @method GreatCircle default
+#' @S3method GreatCircle default
 GreatCircle.default <- function(latitude, longitude, brg, ...) {
   coordinate <- Coordinate(latitude, longitude)
   obj        <- GreatCircle(coordinate, brg)
   return(obj)
 }
 
+#' @rdname GreatCircle
+#' @method GreatCircle Coordinate
+#' @S3method GreatCircle Coordinate
 GreatCircle.Coordinate <- function(coordinate, brg, ...) {
   obj        <- list(coordinate = coordinate,
                      bearing    = brg)
   class(obj) <- 'GreatCircle'
   return(obj)
+}
+
+#' @rdname getLatitude
+#' @method getLatitude GreatCircle
+#' @S3method getLatitude GreatCircle
+getLatitude.GreatCircle <- function(coordinate,
+                                    units = 'degrees') {
+  result <- getLatitude(coordinate$coordinate, units = units)
+  return(result)
+}
+
+#' @rdname getLongitude
+#' @method getLongitude GreatCircle
+#' @S3method getLongitude GreatCircle
+getLongitude.GreatCircle <- function(coordinate,
+                                     units = 'degrees') {
+  result <- getLongitude(coordinate$coordinate, units = units)
+  return(result)
 }
