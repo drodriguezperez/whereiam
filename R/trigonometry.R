@@ -32,6 +32,7 @@
 #' @aliases deg2rad
 deg2rad <- function(deg) {
   result <- deg * pi / 180
+  return(result)
 }
 
 #' Convert degrees, minutas and seconds to degrees
@@ -50,6 +51,7 @@ deg2rad <- function(deg) {
 #' @aliases dms2deg
 dms2deg <- function(degrees, minutes, seconds) {
   result <- degrees + minutes / 60 + seconds / 3600
+  return(result)
 }
 
 #' Convert degrees, minutas and seconds to radians
@@ -67,6 +69,7 @@ dms2deg <- function(degrees, minutes, seconds) {
 #' @aliases dms2rad
 dms2rad <- function(degrees, minutes, seconds) {
   result <- deg2rad(dms2deg(degrees, minutes, seconds))
+  return(result)
 }
 
 #' Convert radians to degrees
@@ -81,7 +84,8 @@ dms2rad <- function(degrees, minutes, seconds) {
 #' @export rad2deg
 #' @aliases rad2deg
 rad2deg <- function(rad) {
-  result <- 180 * rad / pi   
+  result <- 180 * rad / pi
+  return(result)
 }
 
 #' Convert to a radians or degrees
@@ -102,4 +106,3 @@ deg2any <- function(coordinate,
                    NULL)
   return(result)
 }
-

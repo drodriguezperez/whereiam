@@ -259,10 +259,11 @@ moveLongitude.Coordinate <- function(coordinate, distance,
   return(result)
 }
 
-#' Calculate distance between two points
+#' Calculate distance between two points along great circle using the
+#' haversine formulae
 #' 
 #' The function calculates great-circle distances between the two points using
-#' the "Haversine" formula. This is the shortest distance over the earth's
+#' the "Haversine" formulae. This is the shortest distance over the earth's
 #' surface ignoring the geographic shape like hills and vales.
 #' 
 #' @param latitude1 the first latitude coordinate
@@ -318,10 +319,12 @@ haversineDistance.Coordinate <- function(coordinate1, coordinate2,
   return(result)
 }
 
-#' Calculate distance between two points
+#' Calculate distance between two points along great circle using the
+#' Spherical Law of Cosines
 #' 
-#' The function calculates distances between the two points using the
-#' Spherical Law of Cosines formula.
+#' The function calculates distances between the two points along great circle
+#' using the Spherical Law of Cosines formulae. This is the shortest distance
+#' over the earth's surface ignoring the geographic shape like hills and vales.
 #' 
 #' @param latitude1 the first latitude coordinate
 #' @param longitude1 the first longitude coordinate
@@ -372,10 +375,13 @@ sphericalDistance.Coordinate <- function(coordinate1, coordinate2,
   return(result)
 }
 
-#' Calculate distance between two points
+#' Calculate distance between two points along great circle using the
+#' Vincenty's formulae
 #' 
-#' The function calculates distances between the two points using the
-#' Vincenty's formulae.
+#' The function calculates distances between the two points along great circle
+#' using the Vincenty's formulae. This is an iterative method which is based
+#' on the assumption that the figure of the Earth is an oblate spheroid, and
+#' for that reason is more precise than the Spherical Law of Cosines formulae.
 #' 
 #' @param latitude1 the first latitude coordinate
 #' @param longitude1 the first longitude coordinate
@@ -406,8 +412,8 @@ vincentyDistance.default <- function(latitude1, longitude1, latitude2, longitude
                                      units     = 'km',
                                      maxIter   = 100,
                                      convCrite = 1e-12,...) {
-  result <- vincentyDistance(Coordinate(latitude1, longitude2),
-                             Coordinate(latitude1, longitude2),
+  result <- vincentyDistance(Coordinate(latitude1, longitude1),
+                             Coordinate(latitude2, longitude2),
                              units     = units,
                              maxIter   = maxIter,
                              convCrite = convCrite)
@@ -494,11 +500,84 @@ vincentyDistance.Coordinate <- function(coordinate1, coordinate2,
   return(result)
 }
 
+#' Calculate distance between two points along a rhumb line
+#' 
+#' The function calculates distances between the two points along a rhumb
+#' line. The rhumb lines are path of constant bearing and crosses all
+#' meridians at the same angle. The rhumb lines are generally longer than
+#' great-circle routes.
+#' 
+#' @param latitude1 the first latitude coordinate
+#' @param longitude1 the first longitude coordinate
+#' @param latitude2 the second latitude coordinate
+#' @param longitude2 the second longitude coordinate
+#' @param units a string with the distance units (default kilometers)
+#' @param coordinate1 the first coordinate class variable
+#' @param coordinate2 the second coordinate class variable
+#' @param ... other arguments
+#' 
+#' @examples
+#' cord1    <- Coordinate(43, -8)
+#' cord2    <- Coordinate(42, -7)
+#' distance <- rhumbDistance(cord1, cord2)
+#' 
+#' @rdname rhumbDistance
+#' @export rhumbDistance
+rhumbDistance <- function(...) {
+  UseMethod("rhumbDistance")
+}
+
+#' @rdname rhumbDistance
+#' @method rhumbDistance default
+#' @S3method rhumbDistance default
+rhumbDistance.default <- function(latitude1, longitude1, latitude2, longitude2,
+                                  units = 'km', ...) {
+  result <- vincentyDistance(Coordinate(latitude1, longitude1),
+                             Coordinate(latitude2, longitude2),
+                             units = units)
+  return(result)
+}
+
+#' @rdname rhumbDistance
+#' @method rhumbDistance Coordinate
+#' @S3method rhumbDistance Coordinate
+rhumbDistance.Coordinate <- function(coordinate1, coordinate2,
+                                     units = 'km', ...) {
+  latitude1  <- getLatitude(coordinate1,  units = 'radians')
+  longitude1 <- getLongitude(coordinate1, units = 'radians')
+  latitude2  <- getLatitude(coordinate2,  units = 'radians')
+  longitude2 <- getLongitude(coordinate2, units = 'radians')
+  
+  dLatitude  <- latitude2 - latitude1
+  dLongitude <- longitude2 - longitude1
+  dPhi       <- log(tan(pi / 4 + latitude2 / 2) / tan(pi / 4 + latitude1 / 2))
+  
+  if (dPhi != 0) {
+    q <- dLatitude / dPhi
+  } else {
+    q <- cos(latitude1)
+  }
+  
+  if (abs(dLongitude) > pi) {
+    if (dLongitude > 0) {
+      dLon <- - 2 * pi - dLongitude
+    } else {
+      dLon <- 2 * pi + dLongitude
+    }
+  }
+  
+  result <- sqrt(dLatitude^2 + q * q * dLongitude^2) * EARTH_DIAMETER_KM / 2
+  result <- kilometers2Units(result, units)  
+  
+  return(result)
+}
+
 #' Initial bearing between two points
 #'  
 #' Calculate the initial bearing between two points. This bearing which if
 #' followed in a straight line along a great-circle arc will take you from
-#' the start point to the end point
+#' the start point to the end point. The point can be calculated along a
+#' great-circle or a rhumb line.
 #' 
 #' @param latitude1 the first latitude coordinate
 #' @param longitude1 the first longitude coordinate
@@ -506,12 +585,18 @@ vincentyDistance.Coordinate <- function(coordinate1, coordinate2,
 #' @param longitude2 the second longitude coordinate
 #' @param coordinate1 the first coordinate class variable
 #' @param coordinate2 the second coordinate class variable
+#' @param line a string with the line used to calculate greatcircle or rhumb
 #' @param ... other arguments
 #' 
 #' @examples
 #' cord1 <- Coordinate(43, -8)
 #' cord2 <- Coordinate(42, -7)
+#' 
+#' # Using great-circle
 #' brg   <- bearing(cord1, cord2)
+#' 
+#' # Using rhumb
+#' brg   <- bearing(cord1, cord2, line = 'rhumb')
 #' 
 #' @rdname bearing
 #' @export bearing
@@ -522,34 +607,65 @@ bearing <- function(...) {
 #' @rdname bearing
 #' @method bearing default
 #' @S3method bearing default
-bearing.default <- function(latitude1, longitude1, latitude2, longitude2, ...) {
+bearing.default <- function(latitude1, longitude1, latitude2, longitude2,
+                            line = 'greatcircle', ...) {
   result <- bearing(Coordinate(latitude1, longitude1),
-                    Coordinate(latitude2, longitude2))
+                    Coordinate(latitude2, longitude2),
+                    line = line)
   return(result)
 }
 
 #' @rdname bearing
 #' @method bearing Coordinate
 #' @S3method bearing Coordinate
-bearing.Coordinate <- function(coordinate1, coordinate2, ...) {
+bearing.Coordinate <- function(coordinate1, coordinate2,
+                               line = 'greatcircle', ...) {
+  line       <- tolower(line)
   latitude1  <- getLatitude(coordinate1,  units = 'radians')
   longitude1 <- getLongitude(coordinate1, units = 'radians')
   latitude2  <- getLatitude(coordinate2,  units = 'radians')
   longitude2 <- getLongitude(coordinate2, units = 'radians')
+  result     <- NULL
   
-  y  <- sin(longitude2 - longitude1) * cos(latitude2)
-  x1 <- cos(latitude1) * sin(latitude2)
-  x2 <- sin(latitude1) * cos(latitude2) * cos(longitude2 - longitude1)
-  
-  result <- rad2deg(atan2(y, x1 - x2))
-  
+  if (line == 'greatcircle') {
+    y  <- sin(longitude2 - longitude1) * cos(latitude2)
+    x1 <- cos(latitude1) * sin(latitude2)
+    x2 <- sin(latitude1) * cos(latitude2) * cos(longitude2 - longitude1)
+    
+    result <- rad2deg(atan2(y, x1 - x2))
+    
+  } else if (line == 'rhumb') {
+    dLatitude  <- latitude2 - latitude1
+    dLongitude <- longitude2 - longitude1
+    dPhi       <- log(tan(pi/4 + latitude2/2) / tan(pi/4 + latitude1/2))
+    
+    if (dPhi != 0) {
+      q <- dLatitude / dPhi
+    } else {
+      q <- cos(latitude1)
+    }
+    
+    if (abs(dLongitude) > pi) {
+      if (dLongitude > 0) {
+        dLon <- - 2 * pi - dLongitude
+      } else {
+        dLon <- 2 * pi + dLongitude
+      }
+    }
+    
+    result <- rad2deg(atan2(dLongitude, dPhi))
+    
+  } else {
+    stop(sprintf('the line %s is not supported', line))
+  }
+
   return(result)
 }
 
 #' Midpoint between two points
 #'  
 #' Calculate the half-way point along a great circle path between the two
-#' points
+#' points. The point can be calculated along a great-circle or a rhumb line.
 #' 
 #' @param latitude1 the first latitude coordinate
 #' @param longitude1 the first longitude coordinate
@@ -557,12 +673,18 @@ bearing.Coordinate <- function(coordinate1, coordinate2, ...) {
 #' @param longitude2 the second longitude coordinate
 #' @param coordinate1 the first coordinate class variable
 #' @param coordinate2 the second coordinate class variable
+#' @param line a string with the line used to calculate greatcircle or rhumb
 #' @param ... other arguments
 #' 
 #' @examples
 #' cord1 <- Coordinate(43, -8)
 #' cord2 <- Coordinate(42, -7)
+#' 
+#' # Using great-circle
 #' mcord <- midpoint(cord1, cord2)
+#' 
+#' # Using rhumb
+#' mcord <- midpoint(cord1, cord2, line = 'rhumb')
 #' 
 #' @rdname midpoint
 #' @export midpoint
@@ -573,33 +695,58 @@ midpoint <- function(...) {
 #' @rdname midpoint
 #' @method midpoint default
 #' @S3method midpoint default
-midpoint.default <- function(latitude1, longitude1, latitude2, longitude2, ...) {
+midpoint.default <- function(latitude1, longitude1, latitude2, longitude2,
+                             line = 'greatcircle', ...) {
   result <- midpoint(Coordinate(latitude1, longitude1),
-                     Coordinate(latitude2, longitude2))
+                     Coordinate(latitude2, longitude2),
+                     line = line)
   return(result)
 }
 
 #' @rdname midpoint
 #' @method midpoint Coordinate
 #' @S3method midpoint Coordinate
-midpoint.Coordinate <- function(coordinate1, coordinate2, ...) {
+midpoint.Coordinate <- function(coordinate1, coordinate2,
+                                line = 'greatcircle', ...) {
+  line       <- tolower(line)
   latitude1  <- getLatitude(coordinate1,  units = 'radians')
   longitude1 <- getLongitude(coordinate1, units = 'radians')
   latitude2  <- getLatitude(coordinate2,  units = 'radians')
   longitude2 <- getLongitude(coordinate2, units = 'radians')
+  result     <- NULL
   
-  x <- cos(latitude2) * cos(longitude2 - longitude1)
-  y <- cos(latitude2) * sin(longitude2 - longitude1)
-  
-  latitude  <- atan2(sin(latitude1) + sin(latitude2), sqrt((cos(latitude1) + x)^2 +y^2))
-  longitude <- longitude1 + atan2(y, cos(latitude1) + x)
-  
-  result <- Coordinate(rad2deg(latitude), rad2deg(longitude))
+  if (line == 'greatcircle') {
+    x <- cos(latitude2) * cos(longitude2 - longitude1)
+    y <- cos(latitude2) * sin(longitude2 - longitude1)
+    
+    latitude  <- atan2(sin(latitude1) + sin(latitude2), sqrt((cos(latitude1) + x)^2 +y^2))
+    longitude <- longitude1 + atan2(y, cos(latitude1) + x)
+    
+    result <- Coordinate(rad2deg(latitude), rad2deg(longitude))
+    
+  } else if (line == 'rhumb') {
+    latitude  <- (latitude1 + latitude2) / 2
+    longitude <- ((longitude2 - longitude1)  * log(tan(pi /4 + latitude / 2)) +
+                    longitude1 * log(tan(pi/4 + latitude2 / 2)) -
+                    longitude2 * log(tan(pi / 4 + latitude1 / 2))) / 
+      log(tan(pi/4 + latitude2 / 2) / tan(pi / 4 + latitude1 / 2))
+
+    if (!is.finite(longitude)) {
+      longitude <- (longitude1 + longitude2) / 2
+    }
+    
+    longitude = (longitude + 3 * pi) %% (2 * pi) - pi
+    
+    result <- Coordinate(rad2deg(latitude), rad2deg(longitude))
+    
+  } else {
+    stop(sprintf('the line %s is not supported', line))
+  }
   
   return(result)
 }
 
-#' Destination point from start, bearing and distance
+#' Destination point from start, bearing and distance along great circle
 #' 
 #' Obtain a destination point from a given start point, initial bearing,
 #' and distance

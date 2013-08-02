@@ -7,10 +7,10 @@
   midpoint(...)
 
   \method{midpoint}{default} (latitude1, longitude1,
-    latitude2, longitude2, ...)
+    latitude2, longitude2, line = "greatcircle", ...)
 
   \method{midpoint}{Coordinate} (coordinate1, coordinate2,
-    ...)
+    line = "greatcircle", ...)
 }
 \arguments{
   \item{latitude1}{the first latitude coordinate}
@@ -25,15 +25,24 @@
 
   \item{coordinate2}{the second coordinate class variable}
 
+  \item{line}{a string with the line used to calculate
+  greatcircle or rhumb}
+
   \item{...}{other arguments}
 }
 \description{
   Calculate the half-way point along a great circle path
-  between the two points
+  between the two points. The point can be calculated along
+  a great-circle or a rhumb line.
 }
 \examples{
 cord1 <- Coordinate(43, -8)
 cord2 <- Coordinate(42, -7)
+
+# Using great-circle
 mcord <- midpoint(cord1, cord2)
+
+# Using rhumb
+mcord <- midpoint(cord1, cord2, line = 'rhumb')
 }
 

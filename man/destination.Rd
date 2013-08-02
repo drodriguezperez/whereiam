@@ -2,7 +2,7 @@
 \alias{destination}
 \alias{destination.Coordinate}
 \alias{destination.default}
-\title{Destination point from start, bearing and distance}
+\title{Destination point from start, bearing and distance along great circle}
 \usage{
   destination(...)
 

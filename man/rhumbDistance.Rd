@@ -1,16 +1,15 @@
-\name{sphericalDistance}
-\alias{sphericalDistance}
-\alias{sphericalDistance.Coordinate}
-\alias{sphericalDistance.default}
-\title{Calculate distance between two points along great circle using the
-Spherical Law of Cosines}
+\name{rhumbDistance}
+\alias{rhumbDistance}
+\alias{rhumbDistance.Coordinate}
+\alias{rhumbDistance.default}
+\title{Calculate distance between two points along a rhumb line}
 \usage{
-  sphericalDistance(...)
+  rhumbDistance(...)
 
-  \method{sphericalDistance}{default} (latitude1,
-    longitude1, latitude2, longitude2, units = "km", ...)
+  \method{rhumbDistance}{default} (latitude1, longitude1,
+    latitude2, longitude2, units = "km", ...)
 
-  \method{sphericalDistance}{Coordinate} (coordinate1,
+  \method{rhumbDistance}{Coordinate} (coordinate1,
     coordinate2, units = "km", ...)
 }
 \arguments{
@@ -33,14 +32,14 @@ Spherical Law of Cosines}
 }
 \description{
   The function calculates distances between the two points
-  along great circle using the Spherical Law of Cosines
-  formulae. This is the shortest distance over the earth's
-  surface ignoring the geographic shape like hills and
-  vales.
+  along a rhumb line. The rhumb lines are path of constant
+  bearing and crosses all meridians at the same angle. The
+  rhumb lines are generally longer than great-circle
+  routes.
 }
 \examples{
 cord1    <- Coordinate(43, -8)
 cord2    <- Coordinate(42, -7)
-distance <- sphericalDistance(cord1, cord2)
+distance <- rhumbDistance(cord1, cord2)
 }
 

@@ -162,3 +162,18 @@ test_that("Validate distance methods", {
   expect_that(sphericalDistance(googleHQ, operaHouse)  / (11952.717240 * ratio),
               equals(1, tolerance = MAXERROR))  
 })
+
+test_that("Rhumb lines calculations methods", {
+  cord1 <- Coordinate(50, 45)
+  cord2 <- Coordinate(45, 40)
+  
+  ratio <- EARTH_DIAMETER_KM / (2 * 6371)
+  
+  expect_that(rhumbDistance(cord1, cord2),
+              equals(671.4886, tolerance = MAXERROR))
+  expect_that(bearing(cord1, cord2, line='rhumb'),
+              equals(-145.986, tolerance = MAXERROR))
+  expect_that(midpoint(cord1, cord2, line='rhumb'),
+              equals(Coordinate(47.5, 42.44043), tolerance = MAXERROR))
+  
+})
