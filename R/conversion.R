@@ -20,25 +20,27 @@
 ##
 
 units2Kilometers <- function(values, units) {
-  switch(tolower(units),
-         km          = values,
-         meters      = values / 1000,
-         centimeters = values / 100000,
-         cm          = values / 100000,
-         miles       = values / KM_TO_MILES,
-         feets       = values / KM_TO_FEETS,
-         inches      = values / KM_TO_INCHES,
-         stop('Allowed units are km, meters, cm, miles, feets or inches'))
+  result <- switch(tolower(units),
+                   km          = values,
+                   meters      = values / 1000,
+                   centimeters = values / 100000,
+                   cm          = values / 100000,
+                   miles       = values / KM_TO_MILES,
+                   feets       = values / KM_TO_FEETS,
+                   inches      = values / KM_TO_INCHES,
+                   stop('Allowed units are km, meters, cm, miles, feets or inches'))
+  return(result)
 }
 
 kilometers2Units <- function(values, units) {
-  switch(tolower(units),
-         km          = values,
-         meters      = values * 1000,
-         centimeters = values * 100000,
-         cm          = values * 100000,
-         miles       = values * KM_TO_MILES,
-         feets       = values * KM_TO_FEETS,
-         inches      = values * KM_TO_INCHES,
-         stop('Allowed units are km, meters, cm, miles, feets or inches'))
+  result <- switch(tolower(units),
+                   km          = values,
+                   meters      = values * 1000,
+                   centimeters = values * 100000,
+                   cm          = values * 100000,
+                   miles       = values * KM_TO_MILES,
+                   feets       = values * KM_TO_FEETS,
+                   inches      = values * KM_TO_INCHES,
+                   stop('Allowed units are km, meters, cm, miles, feets or inches'))
+  return(result)
 }
