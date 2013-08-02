@@ -2,7 +2,8 @@
 \alias{haversineDistance}
 \alias{haversineDistance.Coordinate}
 \alias{haversineDistance.default}
-\title{Calculate distance between two points}
+\title{Calculate distance between two points along great circle using the
+haversine formulae}
 \usage{
   haversineDistance(...)
 
@@ -32,9 +33,9 @@
 }
 \description{
   The function calculates great-circle distances between
-  the two points using the "Haversine" formula. This is the
-  shortest distance over the earth's surface ignoring the
-  geographic shape like hills and vales.
+  the two points using the "Haversine" formulae. This is
+  the shortest distance over the earth's surface ignoring
+  the geographic shape like hills and vales.
 }
 \examples{
 cord1    <- Coordinate(43, -8)

@@ -2,7 +2,8 @@
 \alias{vincentyDistance}
 \alias{vincentyDistance.Coordinate}
 \alias{vincentyDistance.default}
-\title{Calculate distance between two points}
+\title{Calculate distance between two points along great circle using the
+Vincenty's formulae}
 \usage{
   vincentyDistance(...)
 
@@ -40,7 +41,11 @@
 }
 \description{
   The function calculates distances between the two points
-  using the Vincenty's formulae.
+  along great circle using the Vincenty's formulae. This is
+  an iterative method which is based on the assumption that
+  the figure of the Earth is an oblate spheroid, and for
+  that reason is more precise than the Spherical Law of
+  Cosines formulae.
 }
 \examples{
 cord1    <- Coordinate(43, -8)
