@@ -1,3 +1,4 @@
 whereiam.Rproj
+README.md
 ^.*\.Rproj$
 ^\.Rproj\.user$
