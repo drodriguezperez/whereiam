@@ -65,11 +65,11 @@ test_that("Coordinate S3 class getters", {
 test_that("Haversine distance calculation", {
   test_that(haversineDistance( 0,  0,  0,  0),
             equals(0, tolerance = MAXERROR))
-  test_that(haversineDistance( 0,  0, 90, 90) / 10018.75,
+  test_that(haversineDistance( 0,  0, 90, 90) / 10010,
             equals(1, tolerance = MAXERROR))
-  test_that(haversineDistance(40, 30, 45, 25) / 691.2137,
+  test_that(haversineDistance(40, 30, 45, 25) / 1732,
             equals(1, tolerance = MAXERROR))
-  test_that(haversineDistance(23, 33, 23, 31) / 204.9387,
+  test_that(haversineDistance(23, 33, 23, 31) / 204.7,
             equals(1, tolerance = MAXERROR))
 })
 
@@ -84,15 +84,29 @@ test_that("Spherical law of cosines distance calculation", {
             equals(1, tolerance = MAXERROR))
 })
 
+test_that("Vincenty distance calculation", {
+  test_that(vincentyDistance( 0,  0,  0,  0),
+            equals(0, tolerance = MAXERROR))
+  test_that(vincentyDistance( 0,  0, 90, 90) / 10001.97,
+            equals(1, tolerance = MAXERROR))
+  test_that(vincentyDistance(40, 30, 45, 25) / 690.6346,
+            equals(1, tolerance = MAXERROR))
+  test_that(vincentyDistance(23, 33, 23, 31) / 205.0435,
+            equals(1, tolerance = MAXERROR))
+})
+
 test_that("Add distance to coordinates", {
   cord0 <- Coordinate(33, 86)
   cord1 <- Coordinate(36, 86)
   
-  expect_that(moveLatitude(cord0, 333.9585),
-              equals(cord1, tolerance = 33 * MAXERROR))
+  expect_that(moveLatitude(cord0, 333.5848),
+              equals(cord1, tolerance = MAXERROR))
   
-  expect_that(moveLongitude(33, 46, 373.419),
-              equals(Coordinate(33, 50), tolerance = 46 * MAXERROR))           
+  expect_that(moveLongitude(33, 46, 186.509),
+              equals(Coordinate(33, 48), tolerance = MAXERROR))
+  
+  expect_that(moveLongitude(33, 46, -93.25556),
+              equals(Coordinate(33, 45), tolerance = MAXERROR))   
 })
 
 test_that("Bearing calculation", {
@@ -123,11 +137,11 @@ test_that("Bearing calculation", {
 
 test_that("Destination calculation", {
   expect_that(destination(0, 0,  0, 100),
-              equals(Coordinate(0.8983153, 0), tolerance = MAXERROR))
+              equals(Coordinate(0.8993216, 0), tolerance = MAXERROR))
   expect_that(destination(0, 0, 45, 100),
-              equals(Coordinate(0.6351919, 0.6352309), tolerance = MAXERROR))
+              equals(Coordinate(0.6359033, 0.6359425), tolerance = MAXERROR))
   expect_that(destination(0, 0, 90, 100),
-              equals(Coordinate(0, 0.8983153), tolerance = MAXERROR))
+              equals(Coordinate(0, 0.8993216), tolerance = MAXERROR))
 })
 
 test_that("Validate distance methods", {
@@ -139,27 +153,25 @@ test_that("Validate distance methods", {
   eiffelTower <- Coordinate( 48.8582,      2.294407)
   operaHouse  <- Coordinate(-33.856553,  151.214696)
   
-  ratio <- EARTH_DIAMETER_KM / (2 * 6371)
-  
   expect_that(vincentyDistance(googleHQ, bayArea) / 49.087066,
               equals(1, tolerance = MAXERROR))
-  expect_that(haversineDistance(googleHQ, bayArea) / (49.103006 * ratio),
+  expect_that(haversineDistance(googleHQ, bayArea) / 49.103006,
               equals(1, tolerance = MAXERROR))
-  expect_that(sphericalDistance(googleHQ, bayArea)  / (49.103006 * ratio),
+  expect_that(sphericalDistance(googleHQ, bayArea)  / 49.103006,
               equals(1, tolerance = MAXERROR))
   
   expect_that(vincentyDistance(googleHQ, eiffelTower) / 8989.724399,
               equals(1, tolerance = MAXERROR))
-  expect_that(haversineDistance(googleHQ, eiffelTower) / (8967.042917 * ratio),
+  expect_that(haversineDistance(googleHQ, eiffelTower) / 8967.042917,
               equals(1, tolerance = MAXERROR))
-  expect_that(sphericalDistance(googleHQ, eiffelTower)  / (8967.042917 * ratio),
+  expect_that(sphericalDistance(googleHQ, eiffelTower)  / 8967.042917,
               equals(1, tolerance = MAXERROR))
   
   expect_that(vincentyDistance(googleHQ, operaHouse) / 11939.773640,
               equals(1, tolerance = MAXERROR))
-  expect_that(haversineDistance(googleHQ, operaHouse) / (11952.717240 * ratio),
+  expect_that(haversineDistance(googleHQ, operaHouse) / 11952.717240,
               equals(1, tolerance = MAXERROR))
-  expect_that(sphericalDistance(googleHQ, operaHouse)  / (11952.717240 * ratio),
+  expect_that(sphericalDistance(googleHQ, operaHouse)  / 11952.717240,
               equals(1, tolerance = MAXERROR))  
 })
 
@@ -167,10 +179,8 @@ test_that("Rhumb lines calculations methods", {
   cord1 <- Coordinate(50, 45)
   cord2 <- Coordinate(45, 40)
   
-  ratio <- EARTH_DIAMETER_KM / (2 * 6371)
-  
   expect_that(rhumbDistance(cord1, cord2),
-              equals(671.4886, tolerance = MAXERROR))
+              equals(670.7373, tolerance = MAXERROR))
   expect_that(bearing(cord1, cord2, line='rhumb'),
               equals(-145.986, tolerance = MAXERROR))
   expect_that(midpoint(cord1, cord2, line='rhumb'),

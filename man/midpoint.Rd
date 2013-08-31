@@ -45,4 +45,7 @@ mcord <- midpoint(cord1, cord2)
 # Using rhumb
 mcord <- midpoint(cord1, cord2, line = 'rhumb')
 }
+\references{
+  http://www.movable-type.co.uk/scripts/latlong.html
+}
 

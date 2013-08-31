@@ -22,4 +22,7 @@
   Get the bearing from a GreatCircle object in the
   indicated units (degrees or radians)
 }
+\references{
+  http://www.movable-type.co.uk/scripts/latlong.html
+}
 

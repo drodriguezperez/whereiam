@@ -18,4 +18,7 @@
 \description{
   Calculate of intersection of two great circle paths
 }
+\references{
+  http://www.movable-type.co.uk/scripts/latlong.html
+}
 
