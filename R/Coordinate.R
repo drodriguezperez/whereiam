@@ -280,6 +280,9 @@ moveLongitude.Coordinate <- function(coordinate, distance,
 #' cord2    <- Coordinate(42, -7)
 #' distance <- haversineDistance(cord1, cord2)
 #' 
+#' @references
+#' http://www.movable-type.co.uk/scripts/latlong.html
+#' 
 #' @rdname haversineDistance
 #' @export haversineDistance
 haversineDistance <- function(...) {
@@ -398,6 +401,9 @@ sphericalDistance.Coordinate <- function(coordinate1, coordinate2,
 #' cord1    <- Coordinate(43, -8)
 #' cord2    <- Coordinate(42, -7)
 #' distance <- vincentyDistance(cord1, cord2)
+#' 
+#' @references
+#' http://www.movable-type.co.uk/scripts/latlong-vincenty.html
 #' 
 #' @rdname vincentyDistance
 #' @export vincentyDistance
@@ -521,6 +527,9 @@ vincentyDistance.Coordinate <- function(coordinate1, coordinate2,
 #' cord2    <- Coordinate(42, -7)
 #' distance <- rhumbDistance(cord1, cord2)
 #' 
+#' @references
+#' http://www.movable-type.co.uk/scripts/latlong.html
+#' 
 #' @rdname rhumbDistance
 #' @export rhumbDistance
 rhumbDistance <- function(...) {
@@ -597,6 +606,9 @@ rhumbDistance.Coordinate <- function(coordinate1, coordinate2,
 #' 
 #' # Using rhumb
 #' brg   <- bearing(cord1, cord2, line = 'rhumb')
+#' 
+#' @references
+#' http://www.movable-type.co.uk/scripts/latlong.html
 #' 
 #' @rdname bearing
 #' @export bearing
@@ -686,6 +698,9 @@ bearing.Coordinate <- function(coordinate1, coordinate2,
 #' # Using rhumb
 #' mcord <- midpoint(cord1, cord2, line = 'rhumb')
 #' 
+#' @references
+#' http://www.movable-type.co.uk/scripts/latlong.html
+#' 
 #' @rdname midpoint
 #' @export midpoint
 midpoint <- function(...) {
@@ -763,6 +778,9 @@ midpoint.Coordinate <- function(coordinate1, coordinate2,
 #' # Add 10 kilometers to icord
 #' icord <- Coordinate(43, -8)
 #' ecord <- destination(icord, 30, 10)
+#' 
+#' @references
+#' http://www.movable-type.co.uk/scripts/latlong.html
 #' 
 #' @rdname destination
 #' @export destination

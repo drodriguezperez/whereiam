@@ -37,4 +37,7 @@
 icord <- Coordinate(43, -8)
 ecord <- destination(icord, 30, 10)
 }
+\references{
+  http://www.movable-type.co.uk/scripts/latlong.html
+}
 

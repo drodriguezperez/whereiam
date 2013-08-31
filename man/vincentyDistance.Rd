@@ -52,4 +52,7 @@ cord1    <- Coordinate(43, -8)
 cord2    <- Coordinate(42, -7)
 distance <- vincentyDistance(cord1, cord2)
 }
+\references{
+  http://www.movable-type.co.uk/scripts/latlong-vincenty.html
+}
 

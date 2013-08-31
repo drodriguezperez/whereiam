@@ -26,4 +26,7 @@
   The method create a new GreatCircle object type using the
   indicated latitude and longitude and bearing
 }
+\references{
+  http://en.wikipedia.org/wiki/Great-circle_distance
+}
 

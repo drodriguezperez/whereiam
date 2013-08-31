@@ -30,6 +30,9 @@
 #' @param coordinate a coordinate class
 #' @param ... other argument
 #' 
+#' @references 
+#' http://en.wikipedia.org/wiki/Great-circle_distance
+#' 
 #' @rdname GreatCircle
 #' @export GreatCircle
 #' @aliases GreatCircle
@@ -82,6 +85,9 @@ getLongitude.GreatCircle <- function(coordinate,
 #' @param coordinate a GreatCircle class
 #' @param units a string with the units (degrees or radians)
 #' 
+#' @references
+#' http://www.movable-type.co.uk/scripts/latlong.html
+#' 
 #' @rdname getBearing
 #' @export getBearing
 getBearing <- function(coordinate,
@@ -114,6 +120,9 @@ getBearing.GreatCircle <- function(coordinate,
 #' @param greatCircle1 a GreatCircle class
 #' @param greatCircle2 a GreatCircle class
 #' @param ... other argument
+#' 
+#' @references
+#' http://www.movable-type.co.uk/scripts/latlong.html
 #' 
 #' @rdname intersection
 #' @export intersection
