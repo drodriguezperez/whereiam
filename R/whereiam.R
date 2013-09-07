@@ -5,7 +5,7 @@
 #' 
 #' \tabular{ll}{
 #'   Package: \tab whereiam \cr
-#'   Version: \tab 0.0.5 \cr
+#'   Version: \tab 0.0.6 \cr
 #'   License: \tab GPL-3 \cr
 #' }
 #'
