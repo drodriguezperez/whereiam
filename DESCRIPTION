@@ -2,7 +2,7 @@ Package: whereiam
 Title: whereiam: Geolocation package and spherical trigonometry calculations
 Description: Provides an interface to different geolocation web API and
     functions for spherical trigonometry calculations on Earth.
-Version: 0.0.5
+Version: 0.0.6
 Author: Daniel Rodriguez Perez <daniel.rodriguez.perez@gmail.com>
 Maintainer: Daniel Rodriguez Perez <daniel.rodriguez.perez@gmail.com>
 Depends:
