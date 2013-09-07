@@ -37,3 +37,19 @@ FLATTENING      <- 1 / 298.257223563
 KM_TO_MILES  <- 0.621371192
 KM_TO_FEETS  <- 3280.8399
 KM_TO_INCHES <- 39370.0787
+
+# *****************************************************************************
+#  Getter for the constans
+# *****************************************************************************
+
+#' Returns the diameter of the earth
+#' 
+#' Returns the value used for the diameter of the earth in the calculations
+#' 
+#' @param units a string with the distance units (default kilometers)
+#' 
+#' @export earthDiameter
+#' @aliases earthDiameter earthDiameter
+earthDiameter <- function(units = 'km'){
+  return(kilometers2Units(EARTH_DIAMETER_KM, units = units))
+}

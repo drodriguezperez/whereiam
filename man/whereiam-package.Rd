@@ -10,7 +10,7 @@
 }
 \details{
   \tabular{ll}{ Package: \tab whereiam \cr Version: \tab
-  0.0.5 \cr License: \tab GPL-3 \cr }
+  0.0.6 \cr License: \tab GPL-3 \cr }
 }
 \author{
   Daniel Rodriguez Perez
