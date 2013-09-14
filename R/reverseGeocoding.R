@@ -24,29 +24,44 @@
 #' Obtains a readable address form the point location (latitude, longitude)
 #' using an external service.
 #' 
+#' The list of services available are:
+#'    * Google
+#' 
 #' @param latitude the coordinates longitude
 #' @param longitude the coordinates longitude
+#' @param coordinate a coordinate class
 #' @param service the optional service used to obtain the information
-#' 
-#' @examples
-#' # Get information from diferent coordinates
-#' info <- reverseGeocoding(42.8806027, -8.5445684)
+#' @param ... other arguments
 #' 
 #' @rdname reverseGeocoding
 #' @export reverseGeocoding
-#' @aliases reverseGeocoding
-reverseGeocoding <- function(latitude, longitude, service = 'google') {
+reverseGeocoding <- function(...) {
+  UseMethod("reverseGeocoding")
+}
+
+#' @rdname reverseGeocoding
+#' @method reverseGeocoding default
+#' @S3method reverseGeocoding default
+reverseGeocoding.default <- function(latitude, longitude,
+                                     service = 'google', ...) {
   switch(tolower(service),
-         google = reverseGeocoding.google(latitude, longitude),
+         google = reverseGeocoding_Google(latitude, longitude),
          stop(sprintf('The service "%s" is not supported', service)))
 }
 
-#' @usage reverseGeocoding.google(latitude, longitude)
-#' 
 #' @rdname reverseGeocoding
-#' @export reverseGeocoding.google
-#' @aliases reverseGeocoding.google
-reverseGeocoding.google <- function(latitude, longitude) {
+#' @method reverseGeocoding Coordinate
+#' @S3method reverseGeocoding Coordinate
+reverseGeocoding.Coordinate <- function(coordinate,
+                                        service = 'google', ...) {
+  result <- reverseGeocoding(getLatitude(coordinate),
+                             getLongitude(coordinate),
+                             service=service)
+  return(result)
+}
+
+# Implements Google reverse geocoding service
+reverseGeocoding_Google <- function(latitude, longitude) {
   json_file <- paste('http://maps.googleapis.com/maps/api/geocode/json?latlng=',
                      latitude, ',', longitude, '&sensor=false', sep ='')
   json_data <- fromJSON(paste(readLines(json_file), collapse=""))

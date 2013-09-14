@@ -25,23 +25,20 @@
 #' IP is indicated the function returns it's estimated location, otherwise it
 #' will use the IP of the system.
 #' 
+#' The list of services available are:
+#'    * Freegeoip
+#'    * Hostip
+#'
 #' @param ip an IP address for geolocation (optional default uses the computer)
 #' @param service the optional service used to obtain the coordinates
-#' 
-#' @examples
-#' # Get computer location
-#' location <- getIpCoordinates()
-#' 
-#' # Get '10.10.10.10' location
-#' location <- getIpCoordinates('10.10.10.10')
 #' 
 #' @rdname getIpCoordinates
 #' @export getIpCoordinates
 #' @aliases getIpCoordinates
 getIpCoordinates <- function(ip = getExternalIP(), service = 'freegeoip') {
   switch(tolower(service),
-         freegeoip = getIpCoordinates.freegeoip(ip),
-         hostip    = getIpCoordinates.hostip(ip),
+         freegeoip = getIpCoordinates_freegeoip(ip),
+         hostip    = getIpCoordinates_hostip(ip),
          stop(sprintf('The service "%s" is not supported', service)))
 }
 
@@ -57,23 +54,15 @@ getIpCoordinates.url <- function(url, ip) {
   return(result)
 }
 
-#' @usage getIpCoordinates.freegeoip(ip = getExternalIP())
-#' 
-#' @rdname getIpCoordinates
-#' @export getIpCoordinates.freegeoip
-#' @aliases getIpCoordinates.freegeoip
-getIpCoordinates.freegeoip <- function(ip = getExternalIP()) {
+# Implements access to freegeoip IP coordinates service
+getIpCoordinates_freegeoip <- function(ip = getExternalIP()) {
   result <- getIpCoordinates.url('http://freegeoip.net/json/', ip)
   result <- Coordinate(result$latitude, result$longitude)
   return(result)
 }
 
-#' @usage getIpCoordinates.hostip(ip = getExternalIP())
-#' 
-#' @rdname getIpCoordinates
-#' @export getIpCoordinates.hostip
-#' @aliases getIpCoordinates.hostip
-getIpCoordinates.hostip <- function(ip = getExternalIP()) {
+# Implements access to Hostip IP coordinates service
+getIpCoordinates_hostip <- function(ip = getExternalIP()) {
   result <- getIpCoordinates.url('http://api.hostip.info/get_json.php?position=true&ip=', ip)
   result <- Coordinate(result$lat, result$lng)
   return(result)
