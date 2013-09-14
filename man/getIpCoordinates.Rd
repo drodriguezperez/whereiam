@@ -17,8 +17,7 @@
   external service. If an IP is indicated the function
   returns it's estimated location, otherwise it will use
   the IP of the system.
-}
-\details{
-  The list of services available are: * Freegeoip * Hostip
+
+  The list of services available are: Freegeoip and Hostip
 }
 

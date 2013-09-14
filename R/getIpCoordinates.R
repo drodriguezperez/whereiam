@@ -21,13 +21,12 @@
 
 #' Get location coordinates from an IP
 #' 
+#' @description
 #' Returns the location coordinates of an IP using an external service. If an
 #' IP is indicated the function returns it's estimated location, otherwise it
 #' will use the IP of the system.
 #' 
-#' The list of services available are:
-#'    * Freegeoip
-#'    * Hostip
+#' The list of services available are: Freegeoip and Hostip
 #'
 #' @param ip an IP address for geolocation (optional default uses the computer)
 #' @param service the optional service used to obtain the coordinates

@@ -21,11 +21,11 @@
 
 #' Resolve the reverse geocoding of the coordinates
 #' 
+#' @description
 #' Obtains a readable address form the point location (latitude, longitude)
 #' using an external service.
 #' 
-#' The list of services available are:
-#'    * Google
+#' The list of services available are: Google
 #' 
 #' @param latitude the coordinates longitude
 #' @param longitude the coordinates longitude

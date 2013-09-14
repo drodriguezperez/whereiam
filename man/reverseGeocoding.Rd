@@ -27,8 +27,7 @@
 \description{
   Obtains a readable address form the point location
   (latitude, longitude) using an external service.
-}
-\details{
-  The list of services available are: * Google
+
+  The list of services available are: Google
 }
 
