@@ -42,7 +42,7 @@ getIpCoordinates <- function(ip = getExternalIP(), service = 'freegeoip') {
 }
 
 # Returns the location of an IP using the URL
-getIpCoordinates.url <- function(url, ip) {
+getIpCoordinates_url <- function(url, ip) {
   if (is.null(ip)) {
     result <- NULL
   } else {
@@ -55,14 +55,14 @@ getIpCoordinates.url <- function(url, ip) {
 
 # Implements access to freegeoip IP coordinates service
 getIpCoordinates_freegeoip <- function(ip = getExternalIP()) {
-  result <- getIpCoordinates.url('http://freegeoip.net/json/', ip)
+  result <- getIpCoordinates_url('http://freegeoip.net/json/', ip)
   result <- Coordinate(result$latitude, result$longitude)
   return(result)
 }
 
 # Implements access to Hostip IP coordinates service
 getIpCoordinates_hostip <- function(ip = getExternalIP()) {
-  result <- getIpCoordinates.url('http://api.hostip.info/get_json.php?position=true&ip=', ip)
+  result <- getIpCoordinates_url('http://api.hostip.info/get_json.php?position=true&ip=', ip)
   result <- Coordinate(result$lat, result$lng)
   return(result)
 }

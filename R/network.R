@@ -46,30 +46,31 @@ is.connected <- function() {
 }
 
 #' Get the external IP of the computer
-#'
+#' 
+#' @description
 #' Returns the external IP of the computer if it is connected to internet,
 #' otherwise returns NULL
 #' 
-#' @param service the optional service used to obtain the external IP
+#' The list of services available are: whatismyipaddress, ifconfig, icanhazip,
+#' ipecho and appspot   
 #' 
-#' @examples
-#' IP <- getExternalIP()
+#' @param service the optional service used to obtain the external IP
 #' 
 #' @rdname getExternalIP
 #' @export getExternalIP
 #' @aliases getExternalIP getExternalIP
 getExternalIP <- function(service = 'whatismyipaddress') {
   switch(tolower(service),
-         whatismyipaddress = getExternalIP.whatismyipaddress(),
-         ifconfig          = getExternalIP.ifconfig(),
-         icanhazip         = getExternalIP.icanhazip(),
-         ipecho            = getExternalIP.ipecho(),
-         appspot           = getExternalIP.appspot(),
+         whatismyipaddress = getExternalIP_whatismyipaddress(),
+         ifconfig          = getExternalIP_ifconfig(),
+         icanhazip         = getExternalIP_icanhazip(),
+         ipecho            = getExternalIP_ipecho(),
+         appspot           = getExternalIP_appspot(),
          stop(sprintf('The service "%s" is not supported', service)))
 }
 
 # Get the external ip from a server indicated in the URL
-getExternalIP.url <- function(url) {
+getExternalIP_url <- function(url) {
   if (is.connected()) {
     ip <- getURL(url)
     ip <- gsub('\n', '', ip)
@@ -80,52 +81,32 @@ getExternalIP.url <- function(url) {
   return(ip)
 }
 
-#' @usage getExternalIP.whatismyipaddress()
-#' 
-#' @rdname getExternalIP
-#' @export getExternalIP.whatismyipaddress
-#' @aliases getExternalIP.whatismyipaddress getExternalIP.whatismyipaddress
-getExternalIP.whatismyipaddress <- function() {
-  ip <- getExternalIP.url('http://bot.whatismyipaddress.com')
+# Get the external ip from whatismyipaddress
+getExternalIP_whatismyipaddress <- function() {
+  ip <- getExternalIP_url('http://bot.whatismyipaddress.com')
   return(ip)
 }
 
-#' @usage getExternalIP.ifconfig()
-#' 
-#' @rdname getExternalIP
-#' @export getExternalIP.ifconfig
-#' @aliases getExternalIP.ifconfig getExternalIP.ifconfig
-getExternalIP.ifconfig <- function() {
-  ip <- getExternalIP.url('http://ifconfig.me/ip')
+# Get the external ip from ifconfig
+getExternalIP_ifconfig <- function() {
+  ip <- getExternalIP_url('http://ifconfig.me/ip')
   return(ip)
 }
 
-#' @usage getExternalIP.icanhazip()
-#' 
-#' @rdname getExternalIP
-#' @export getExternalIP.icanhazip
-#' @aliases getExternalIP.icanhazip getExternalIP.icanhazip
-getExternalIP.icanhazip <- function() {
-  ip <- getExternalIP.url('http://icanhazip.com')
+# Get the external ip from icanhazip
+getExternalIP_icanhazip <- function() {
+  ip <- getExternalIP_url('http://icanhazip.com')
   return(ip)
 }
 
-#' @usage getExternalIP.ipecho()
-#' 
-#' @rdname getExternalIP
-#' @export getExternalIP.ipecho
-#' @aliases getExternalIP.ipecho getExternalIP.ipecho
-getExternalIP.ipecho <- function() {
-  ip <- getExternalIP.url('http://ipecho.net/plain')
+# Get the external ip from ipecho
+getExternalIP_ipecho <- function() {
+  ip <- getExternalIP_url('http://ipecho.net/plain')
   return(ip)
 }
 
-#' @usage getExternalIP.appspot()
-#' 
-#' @rdname getExternalIP
-#' @export getExternalIP.appspot
-#' @aliases getExternalIP.appspot getExternalIP.appspot
-getExternalIP.appspot <- function() {
-  ip <- getExternalIP.url('http://ip.appspot.com')
+# Get the external ip from ip.appspot.com
+getExternalIP_appspot <- function() {
+  ip <- getExternalIP_url('http://ip.appspot.com')
   return(ip)
 }
