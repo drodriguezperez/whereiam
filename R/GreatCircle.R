@@ -42,7 +42,7 @@ GreatCircle <- function(...){
 
 #' @rdname GreatCircle
 #' @method GreatCircle default
-#' @S3method GreatCircle default
+#' @export
 GreatCircle.default <- function(latitude, longitude, brg, ...) {
   coordinate <- Coordinate(latitude, longitude)
   obj        <- GreatCircle(coordinate, brg)
@@ -51,7 +51,7 @@ GreatCircle.default <- function(latitude, longitude, brg, ...) {
 
 #' @rdname GreatCircle
 #' @method GreatCircle Coordinate
-#' @S3method GreatCircle Coordinate
+#' @export
 GreatCircle.Coordinate <- function(coordinate, brg, ...) {
   obj        <- list(coordinate = coordinate,
                      bearing    = brg)
@@ -61,7 +61,7 @@ GreatCircle.Coordinate <- function(coordinate, brg, ...) {
 
 #' @rdname getLatitude
 #' @method getLatitude GreatCircle
-#' @S3method getLatitude GreatCircle
+#' @export
 getLatitude.GreatCircle <- function(coordinate,
                                     units = 'degrees') {
   result <- getLatitude(coordinate$coordinate, units = units)
@@ -70,7 +70,7 @@ getLatitude.GreatCircle <- function(coordinate,
 
 #' @rdname getLongitude
 #' @method getLongitude GreatCircle
-#' @S3method getLongitude GreatCircle
+#' @export
 getLongitude.GreatCircle <- function(coordinate,
                                      units = 'degrees') {
   result <- getLongitude(coordinate$coordinate, units = units)
@@ -97,7 +97,7 @@ getBearing <- function(coordinate,
 
 #' @rdname getBearing
 #' @method getBearing default
-#' @S3method getBearing default
+#' @export
 getBearing.default <- function(coordinate,
                                units = 'degrees') {
   result <- deg2any(coordinate, units = units)
@@ -106,7 +106,7 @@ getBearing.default <- function(coordinate,
 
 #' @rdname getBearing
 #' @method getBearing GreatCircle
-#' @S3method getBearing GreatCircle
+#' @export
 getBearing.GreatCircle <- function(coordinate,
                                    units = 'degrees') {
   result <- getLongitude(coordinate$bearing, units = units)
@@ -132,7 +132,7 @@ intersection <- function(...){
 
 #' @rdname intersection
 #' @method intersection GreatCircle
-#' @S3method intersection GreatCircle
+#' @export
 intersection.GreatCircle <- function(greatCircle1, greatCircle2, ...) {
   latitude1  <- getLatitude(greatCircle1, units='radians')
   longitude1 <- getLongitude(greatCircle1, units='radians')

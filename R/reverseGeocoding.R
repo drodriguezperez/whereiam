@@ -41,7 +41,7 @@ reverseGeocoding <- function(...) {
 
 #' @rdname reverseGeocoding
 #' @method reverseGeocoding default
-#' @S3method reverseGeocoding default
+#' @export
 reverseGeocoding.default <- function(latitude, longitude,
                                      service = 'google', ...) {
   switch(tolower(service),
@@ -51,7 +51,7 @@ reverseGeocoding.default <- function(latitude, longitude,
 
 #' @rdname reverseGeocoding
 #' @method reverseGeocoding Coordinate
-#' @S3method reverseGeocoding Coordinate
+#' @export
 reverseGeocoding.Coordinate <- function(coordinate,
                                         service = 'google', ...) {
   result <- reverseGeocoding(getLatitude(coordinate),

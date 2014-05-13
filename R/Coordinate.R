@@ -67,7 +67,7 @@ getLatitude <- function(coordinate,
 
 #' @rdname getLatitude
 #' @method getLatitude default
-#' @S3method getLatitude default
+#' @export
 getLatitude.default <- function(coordinate,
                                 units = 'degrees') {
   result <- deg2any(coordinate, units = units)
@@ -76,7 +76,7 @@ getLatitude.default <- function(coordinate,
 
 #' @rdname getLatitude
 #' @method getLatitude Coordinate
-#' @S3method getLatitude Coordinate
+#' @export
 getLatitude.Coordinate <- function(coordinate,
                                    units = 'degrees') {
   result <- getLatitude(coordinate$latitude, units = units)
@@ -100,7 +100,7 @@ getLongitude <- function(coordinate,
 
 #' @rdname getLongitude
 #' @method getLongitude default
-#' @S3method getLongitude default
+#' @export
 getLongitude.default <- function(coordinate,
                                  units = 'degrees') {
   result <- deg2any(coordinate, units = units)
@@ -109,7 +109,7 @@ getLongitude.default <- function(coordinate,
 
 #' @rdname getLongitude
 #' @method getLongitude Coordinate
-#' @S3method getLongitude Coordinate
+#' @export
 getLongitude.Coordinate <- function(coordinate,
                                     units = 'degrees') {
   result <- getLongitude(coordinate$longitude, units = units)
@@ -133,7 +133,7 @@ antipode <- function(...){
 
 #' @rdname antipode
 #' @method antipode default
-#' @S3method antipode default
+#' @export
 antipode.default <- function(latitude, longitude, ...) {
   result <- antipode(Coordinate(latitude, longitude))
   return(result)
@@ -141,7 +141,7 @@ antipode.default <- function(latitude, longitude, ...) {
 
 #' @rdname antipode
 #' @method antipode Coordinate
-#' @S3method antipode Coordinate
+#' @export
 antipode.Coordinate <- function(coordinate, ...) {  
   latitude  <- - coordinate$latitude
   longitude <- coordinate$longitude
@@ -183,7 +183,7 @@ moveLatitude <- function(...){
 
 #' @rdname moveLatitude
 #' @method moveLatitude default
-#' @S3method moveLatitude default
+#' @export
 moveLatitude.default <- function(latitude, longitude, distance,
                                  units = 'km', ...) {
   result <-   moveLatitude(Coordinate(latitude, longitude),
@@ -194,7 +194,7 @@ moveLatitude.default <- function(latitude, longitude, distance,
 
 #' @rdname moveLatitude
 #' @method moveLatitude Coordinate
-#' @S3method moveLatitude Coordinate
+#' @export
 moveLatitude.Coordinate <- function(coordinate, distance,
                                     units = 'km', ...) {
   latitude  <- coordinate$latitude
@@ -234,7 +234,7 @@ moveLongitude <- function(...){
 
 #' @rdname moveLongitude
 #' @method moveLongitude default
-#' @S3method moveLongitude default
+#' @export
 moveLongitude.default <- function(latitude, longitude, distance,
                                          units = 'km', ...) {
   result <- moveLongitude(Coordinate(latitude, longitude),
@@ -245,7 +245,7 @@ moveLongitude.default <- function(latitude, longitude, distance,
 
 #' @rdname moveLongitude
 #' @method moveLongitude Coordinate
-#' @S3method moveLongitude Coordinate
+#' @export
 moveLongitude.Coordinate <- function(coordinate, distance,
                                              units = 'km', ...) {
   latitude  <- coordinate$latitude
@@ -291,7 +291,7 @@ haversineDistance <- function(...) {
 
 #' @rdname haversineDistance
 #' @method haversineDistance default
-#' @S3method haversineDistance default
+#' @export
 haversineDistance.default <- function(latitude1, longitude1, latitude2, longitude2,
                                       units = 'km', ...) {
   result <- haversineDistance(Coordinate(latitude1, longitude1),
@@ -302,7 +302,7 @@ haversineDistance.default <- function(latitude1, longitude1, latitude2, longitud
 
 #' @rdname haversineDistance
 #' @method haversineDistance Coordinate
-#' @S3method haversineDistance Coordinate
+#' @export
 haversineDistance.Coordinate <- function(coordinate1, coordinate2,
                                           units = 'km', ...) {
   latitude1  <- getLatitude(coordinate1,  units = 'radians')
@@ -351,7 +351,7 @@ sphericalDistance <- function(...) {
 
 #' @rdname sphericalDistance
 #' @method sphericalDistance default
-#' @S3method sphericalDistance default
+#' @export
 sphericalDistance.default <- function(latitude1, longitude1, latitude2, longitude2,
                                       units = 'km', ...) {
   result <- sphericalDistance(Coordinate(latitude1, longitude1),
@@ -362,7 +362,7 @@ sphericalDistance.default <- function(latitude1, longitude1, latitude2, longitud
 
 #' @rdname sphericalDistance
 #' @method sphericalDistance Coordinate
-#' @S3method sphericalDistance Coordinate
+#' @export
 sphericalDistance.Coordinate <- function(coordinate1, coordinate2,
                                          units = 'km', ...) {
   latitude1  <- getLatitude(coordinate1,  units = 'radians')
@@ -413,7 +413,7 @@ vincentyDistance <- function(...) {
 
 #' @rdname vincentyDistance
 #' @method vincentyDistance default
-#' @S3method vincentyDistance default
+#' @export
 vincentyDistance.default <- function(latitude1, longitude1, latitude2, longitude2,
                                      units     = 'km',
                                      maxIter   = 100,
@@ -428,7 +428,7 @@ vincentyDistance.default <- function(latitude1, longitude1, latitude2, longitude
 
 #' @rdname vincentyDistance
 #' @method vincentyDistance Coordinate
-#' @S3method vincentyDistance Coordinate
+#' @export
 vincentyDistance.Coordinate <- function(coordinate1, coordinate2,
                                         units     = 'km',
                                         maxIter   = 100,
@@ -538,7 +538,7 @@ rhumbDistance <- function(...) {
 
 #' @rdname rhumbDistance
 #' @method rhumbDistance default
-#' @S3method rhumbDistance default
+#' @export
 rhumbDistance.default <- function(latitude1, longitude1, latitude2, longitude2,
                                   units = 'km', ...) {
   result <- vincentyDistance(Coordinate(latitude1, longitude1),
@@ -549,7 +549,7 @@ rhumbDistance.default <- function(latitude1, longitude1, latitude2, longitude2,
 
 #' @rdname rhumbDistance
 #' @method rhumbDistance Coordinate
-#' @S3method rhumbDistance Coordinate
+#' @export
 rhumbDistance.Coordinate <- function(coordinate1, coordinate2,
                                      units = 'km', ...) {
   latitude1  <- getLatitude(coordinate1,  units = 'radians')
@@ -618,7 +618,7 @@ bearing <- function(...) {
 
 #' @rdname bearing
 #' @method bearing default
-#' @S3method bearing default
+#' @export
 bearing.default <- function(latitude1, longitude1, latitude2, longitude2,
                             line = 'greatcircle', ...) {
   result <- bearing(Coordinate(latitude1, longitude1),
@@ -629,7 +629,7 @@ bearing.default <- function(latitude1, longitude1, latitude2, longitude2,
 
 #' @rdname bearing
 #' @method bearing Coordinate
-#' @S3method bearing Coordinate
+#' @export
 bearing.Coordinate <- function(coordinate1, coordinate2,
                                line = 'greatcircle', ...) {
   line       <- tolower(line)
@@ -709,7 +709,7 @@ midpoint <- function(...) {
 
 #' @rdname midpoint
 #' @method midpoint default
-#' @S3method midpoint default
+#' @export
 midpoint.default <- function(latitude1, longitude1, latitude2, longitude2,
                              line = 'greatcircle', ...) {
   result <- midpoint(Coordinate(latitude1, longitude1),
@@ -720,7 +720,7 @@ midpoint.default <- function(latitude1, longitude1, latitude2, longitude2,
 
 #' @rdname midpoint
 #' @method midpoint Coordinate
-#' @S3method midpoint Coordinate
+#' @export
 midpoint.Coordinate <- function(coordinate1, coordinate2,
                                 line = 'greatcircle', ...) {
   line       <- tolower(line)
@@ -790,7 +790,7 @@ destination <- function(...) {
 
 #' @rdname destination
 #' @method destination default
-#' @S3method destination default
+#' @export
 destination.default <- function(latitude, longitude, brg, distance,
                                 units = 'km', ...) {
   result <- destination(Coordinate(latitude, longitude), brg, distance,
@@ -800,7 +800,7 @@ destination.default <- function(latitude, longitude, brg, distance,
 
 #' @rdname destination
 #' @method destination Coordinate
-#' @S3method destination Coordinate
+#' @export
 destination.Coordinate <- function(coordinate, brg,
                                     distance, units = 'km', ...) {
   latitude  <- getLatitude(coordinate,  units = 'radians')
